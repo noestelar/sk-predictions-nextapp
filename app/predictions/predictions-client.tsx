@@ -20,6 +20,7 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [timeLeft, setTimeLeft] = useState<string>('');
+    const [selectionMessage, setSelectionMessage] = useState<string>('');
     const router = useRouter();
     const { data: session } = useSession();
 
@@ -87,6 +88,8 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
 
         setSelectedPair((prev) => {
             if (prev.length === 0) {
+                const selectedParticipant = participants.find(p => p.id === id);
+                setSelectionMessage(`Selected ${selectedParticipant?.name} as gifter. Now select their giftee.`);
                 return [id];
             }
 
@@ -96,6 +99,9 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
                 }
 
                 const updated = [...prev, id];
+                const gifter = participants.find(p => p.id === updated[0]);
+                const giftee = participants.find(p => p.id === updated[1]);
+                setSelectionMessage(`Set ${gifter?.name} to give a gift to ${giftee?.name}`);
 
                 setEditingPredictions(prevPredictions => {
                     const filtered = prevPredictions.filter(pair =>
@@ -129,6 +135,7 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
 
             setPredictions(editingPredictions);
             setIsEditing(false);
+            setSelectionMessage('');
             alert('Predictions saved successfully!');
         } catch (error) {
             console.error(error);
@@ -142,6 +149,7 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
         setEditingPredictions(predictions);
         setIsEditing(false);
         setSelectedPair([]);
+        setSelectionMessage('');
     };
 
     if (isLoading) {
@@ -175,6 +183,11 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
                     {isPastCutoff && (
                         <div className="mt-4 p-4 bg-red-500/20 border border-red-500 rounded-lg text-red-300">
                             Predictions are now closed. The cutoff time has passed.
+                        </div>
+                    )}
+                    {selectionMessage && (
+                        <div className="mt-4 p-4 bg-gold-500/20 border border-gold-500 rounded-lg text-gold-300">
+                            {selectionMessage}
                         </div>
                     )}
                 </div>
@@ -264,4 +277,3 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
         </div>
     );
 }
-
