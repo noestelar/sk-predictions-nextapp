@@ -4,12 +4,18 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
 import { Participant, CutoffTime } from '@prisma/client';
-import { Sparkles, Gift, ArrowRight, Edit2, Save, X, Clock } from 'lucide-react';
+import { Sparkles, Gift, Edit2, Save, X, Clock } from 'lucide-react';
+import Image from 'next/image';
 
 interface PredictionsClientProps {
     participants: Participant[];
     cutoffTime: CutoffTime | null;
     isPastCutoff: boolean;
+}
+
+interface Prediction {
+    participantIdGifter: string;
+    participantIdGiftee: string;
 }
 
 export default function PredictionsClient({ participants, cutoffTime, isPastCutoff }: PredictionsClientProps) {
@@ -21,8 +27,6 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
     const [isLoading, setIsLoading] = useState(true);
     const [timeLeft, setTimeLeft] = useState<string>('');
     const [selectionMessage, setSelectionMessage] = useState<string>('');
-    const router = useRouter();
-    const { data: session } = useSession();
 
     useEffect(() => {
         async function fetchPredictions() {
@@ -32,7 +36,7 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
                     throw new Error('Failed to fetch predictions');
                 }
                 const data = await res.json();
-                const existingPredictions = data.predictions.map((p: any) => [p.participantIdGifter, p.participantIdGiftee]);
+                const existingPredictions = data.predictions.map((p: Prediction) => [p.participantIdGifter, p.participantIdGiftee]);
                 setPredictions(existingPredictions);
                 setEditingPredictions(existingPredictions);
                 setIsEditing(existingPredictions.length === 0 && !isPastCutoff);
@@ -219,10 +223,11 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
                                 `}
                             >
                                 <div className="aspect-square relative rounded-full overflow-hidden mb-4">
-                                    <img
+                                    <Image
                                         src={participant.profilePic}
                                         alt={participant.name}
-                                        className="object-cover w-full h-full"
+                                        className="object-cover"
+                                        fill
                                     />
                                 </div>
                                 <h3 className="text-center font-semibold">{participant.name}</h3>

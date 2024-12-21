@@ -1,5 +1,4 @@
 // Server Component for data fetching
-import { Participant } from '@prisma/client';
 import PredictionsClient from './predictions-client';
 import prisma from '@/lib/prisma';
 import { Suspense } from 'react';
