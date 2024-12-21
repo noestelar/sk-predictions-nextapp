@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "preinstall": "echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' > .npmrc",
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
