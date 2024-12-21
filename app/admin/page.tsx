@@ -7,7 +7,7 @@ import { Clock, Gift } from 'lucide-react';
 
 export default function AdminPage() {
     const router = useRouter();
-    const { data: session, status } = useSession({
+    const { status } = useSession({
         required: true,
         onUnauthenticated() {
             router.push('/');

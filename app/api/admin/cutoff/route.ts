@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
 import { getServerSession } from 'next-auth';
 import { AuthOptions } from 'next-auth';
 import FacebookProvider from 'next-auth/providers/facebook';
@@ -32,7 +31,7 @@ const authOptions: AuthOptions = {
     },
 };
 
-export async function GET(request: Request) {
+export async function GET() {
     try {
         const session = await getServerSession(authOptions);
 

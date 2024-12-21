@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { Gift, Save, X } from 'lucide-react';
 import { Participant } from '@prisma/client';
+import Image from 'next/image';
 
 interface Result {
     gifterId: string;
@@ -21,7 +22,7 @@ export default function ResultsPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [selectionMessage, setSelectionMessage] = useState<string>('');
     const router = useRouter();
-    const { data: session, status } = useSession({
+    const { status } = useSession({
         required: true,
         onUnauthenticated() {
             router.push('/');
@@ -94,7 +95,7 @@ export default function ResultsPage() {
     };
 
     const getGifterForGiftee = (gifteeId: string) => {
-        const pair = results.find(([_, g]) => g === gifteeId);
+        const pair = results.find(([gifter, giftee]) => giftee === gifteeId);
         return pair ? pair[0] : null;
     };
 
@@ -160,10 +161,11 @@ export default function ResultsPage() {
                                 `}
                             >
                                 <div className="aspect-square relative rounded-full overflow-hidden mb-4">
-                                    <img
+                                    <Image
                                         src={participant.profilePic}
                                         alt={participant.name}
-                                        className="object-cover w-full h-full"
+                                        className="object-cover"
+                                        fill
                                     />
                                 </div>
                                 <h3 className="text-center font-semibold">{participant.name}</h3>
