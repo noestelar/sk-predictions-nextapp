@@ -74,3 +74,12 @@ model Result {
 
   @@map("results")
 }
+
+model CutoffTime {
+  id        Int      @id @default(autoincrement())
+  datetime  DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("cutoff_time")
+}
