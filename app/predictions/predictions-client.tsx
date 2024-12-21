@@ -233,12 +233,12 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
                                 <h3 className="text-center font-semibold">{participant.name}</h3>
                                 {isGiftee && (
                                     <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2">
-                                        <Gift className="w-6 h-6 text-gold-500" />
+                                        <Gift className="w-6 h-6 text-emerald-500" />
                                     </div>
                                 )}
                                 {isGifterFor && (
                                     <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                                        <Sparkles className="w-6 h-6 text-gold-500" />
+                                        <Sparkles className="w-6 h-6 text-purple-500" />
                                     </div>
                                 )}
                             </div>
