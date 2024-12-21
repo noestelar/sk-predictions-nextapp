@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client'
-import { put, list } from '@vercel/blob';
+import { put } from '@vercel/blob';
 import fs from 'fs';
-import path from 'path';
+import { initializeDatabase } from './initDb';
 
 declare global {
   var prisma: PrismaClient | undefined
@@ -9,37 +9,12 @@ declare global {
 
 const DB_PATH = '/tmp/database.db';
 
-async function initializeDatabase() {
-  if (process.env.ENVIRONMENT === 'production') {
-    try {
-      // Try to download existing database from Blob storage
-      const { blobs } = await list();
-      const dbBlob = blobs.find(b => b.pathname === 'database.db');
-      if (dbBlob) {
-        const response = await fetch(dbBlob.url);
-        const buffer = await response.arrayBuffer();
-        fs.writeFileSync(DB_PATH, Buffer.from(buffer));
-      }
-    } catch (error) {
-      console.log('No existing database found in storage, creating new one');
-    }
-  }
-}
-
-// Function to save database to Blob storage
-async function saveDatabase() {
-  if (process.env.ENVIRONMENT === 'production') {
-    const dbBuffer = fs.readFileSync(DB_PATH);
-    await put('database.db', dbBuffer, { access: 'public' });
-  }
-}
-
 let prisma: PrismaClient
 
 if (process.env.ENVIRONMENT === 'production') {
-  // Initialize database from Blob storage
+  // Initialize database
   await initializeDatabase();
-
+  
   // Update DATABASE_URL to use /tmp
   process.env.DATABASE_URL = `file:${DB_PATH}`;
   prisma = new PrismaClient();
@@ -47,7 +22,8 @@ if (process.env.ENVIRONMENT === 'production') {
   // Save database to Blob storage after each request
   prisma.$use(async (params: any, next: any) => {
     const result = await next(params);
-    await saveDatabase();
+    const dbBuffer = fs.readFileSync(DB_PATH);
+    await put('database.db', dbBuffer, { access: 'public' });
     return result;
   });
 } else {
