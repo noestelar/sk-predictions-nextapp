@@ -50,16 +50,20 @@ const authOptions: AuthOptions = {
 export async function POST(req: NextRequest) {
     try {
         const session = await getServerSession(authOptions);
-        console.log('Session:', session); // Debug log
 
         if (!session?.user?.id) {
-            console.log('No session or user ID found'); // Debug log
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
         const { predictions } = await req.json();
         const userId = session.user.id;
 
+        // First, delete any existing predictions for this user
+        await prisma.prediction.deleteMany({
+            where: { userId }
+        });
+
+        // Then create the new predictions
         const data = predictions.map(([gifterId, gifteeId]: [string, string]) => ({
             userId,
             participantIdGifter: gifterId,
@@ -78,7 +82,7 @@ export async function POST(req: NextRequest) {
 export async function GET(req: NextRequest) {
     try {
         const session = await getServerSession(authOptions);
-        
+
         if (!session?.user?.id) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
