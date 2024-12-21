@@ -35,15 +35,15 @@ export default function WinnersClient({ scores }: WinnersClientProps) {
           onClick={() => signOut({ callbackUrl: '/' })}
           className="absolute top-0 right-0 px-4 py-2 bg-transparent border-2 border-gold-500 text-gold-500 rounded-lg shadow-lg hover:bg-gold-500/10 transition-colors duration-300 font-semibold"
         >
-          Logout
+          Cerrar Sesión
         </button>
 
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-gold-400 to-gold-600">
-            Prediction Game Winners
+            Ganadores SKToxqui
           </h1>
           <p className="text-gold-300">
-            See who made the most accurate predictions!
+            ¡Mira quién hizo las predicciones más precisas!
           </p>
         </div>
 
@@ -67,7 +67,7 @@ export default function WinnersClient({ scores }: WinnersClientProps) {
                   <div>
                     <h2 className="text-xl font-semibold">{score.userName}</h2>
                     <p className="text-gold-300">
-                      {score.correctGuesses} correct out of {score.totalGuesses} predictions
+                      {score.correctGuesses} correctas de {score.totalGuesses} predicciones
                     </p>
                   </div>
                 </div>
@@ -84,7 +84,7 @@ export default function WinnersClient({ scores }: WinnersClientProps) {
             href="/predictions"
             className="inline-block px-6 py-3 bg-gradient-to-r from-gold-400 to-gold-600 text-black rounded-lg shadow-lg hover:from-gold-500 hover:to-gold-700 transition-colors duration-300 font-semibold"
           >
-            Back to Predictions
+            Volver a Predicciones
           </a>
         </div>
       </div>

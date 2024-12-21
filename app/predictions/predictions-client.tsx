@@ -33,7 +33,7 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
             try {
                 const res = await fetch('/api/predictions');
                 if (!res.ok) {
-                    throw new Error('Failed to fetch predictions');
+                    throw new Error('Error al obtener predicciones');
                 }
                 const data = await res.json();
                 const existingPredictions = data.predictions.map((p: Prediction) => [p.participantIdGifter, p.participantIdGiftee]);
@@ -41,7 +41,7 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
                 setEditingPredictions(existingPredictions);
                 setIsEditing(existingPredictions.length === 0 && !isPastCutoff);
             } catch (error) {
-                console.error('Error fetching predictions:', error);
+                console.error('Error al obtener predicciones:', error);
             } finally {
                 setIsLoading(false);
             }
@@ -57,7 +57,7 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
             const cutoffDate = new Date(cutoffTime.datetime);
 
             if (now >= cutoffDate) {
-                setTimeLeft('Predictions are closed');
+                setTimeLeft('Las predicciones están cerradas');
                 setIsEditing(false);
                 return;
             }
@@ -68,7 +68,7 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
             const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-            setTimeLeft(`${days}d ${hours}h ${minutes}m ${seconds}s remaining`);
+            setTimeLeft(`${days}d ${hours}h ${minutes}m ${seconds}s restantes`);
         };
 
         updateTimeLeft();
@@ -93,7 +93,7 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
         setSelectedPair((prev) => {
             if (prev.length === 0) {
                 const selectedParticipant = participants.find(p => p.id === id);
-                setSelectionMessage(`Selected ${selectedParticipant?.name} as gifter. Now select their giftee.`);
+                setSelectionMessage(`Seleccionado ${selectedParticipant?.name} como regalador. Ahora selecciona a quien le regalará.`);
                 return [id];
             }
 
@@ -105,7 +105,7 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
                 const updated = [...prev, id];
                 const gifter = participants.find(p => p.id === updated[0]);
                 const giftee = participants.find(p => p.id === updated[1]);
-                setSelectionMessage(`Set ${gifter?.name} to give a gift to ${giftee?.name}`);
+                setSelectionMessage(`${gifter?.name} le regalará a ${giftee?.name}`);
 
                 setEditingPredictions(prevPredictions => {
                     const filtered = prevPredictions.filter(pair =>
@@ -134,16 +134,16 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
 
             if (!res.ok) {
                 const error = await res.json();
-                throw new Error(error.error || 'Failed to save predictions');
+                throw new Error(error.error || 'Error al guardar predicciones');
             }
 
             setPredictions(editingPredictions);
             setIsEditing(false);
             setSelectionMessage('');
-            alert('Predictions saved successfully!');
+            alert('¡Predicciones guardadas exitosamente!');
         } catch (error) {
             console.error(error);
-            alert(error instanceof Error ? error.message : 'An error occurred while saving predictions.');
+            alert(error instanceof Error ? error.message : 'Ocurrió un error al guardar las predicciones.');
         } finally {
             setIsSubmitting(false);
         }
@@ -171,12 +171,12 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
                     onClick={() => signOut({ callbackUrl: '/' })}
                     className="absolute top-0 right-0 px-4 py-2 bg-transparent border-2 border-gold-500 text-gold-500 rounded-lg shadow-lg hover:bg-gold-500/10 transition-colors duration-300 font-semibold"
                 >
-                    Logout
+                    Cerrar Sesión
                 </button>
 
                 <div className="text-center mb-12">
                     <h1 className="text-4xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-gold-400 to-gold-600">
-                        Secret Santa Predictions
+                        Predicciones SKToxqui
                     </h1>
                     {cutoffTime && (
                         <div className="flex items-center justify-center space-x-2 text-gold-300">
@@ -187,13 +187,13 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
                     {isPastCutoff && (
                         <div className="mt-4">
                             <div className="p-4 bg-red-500/20 border border-red-500 rounded-lg text-red-300 mb-4">
-                                Predictions are now closed. The cutoff time has passed.
+                                Las predicciones están cerradas. El tiempo límite ha pasado.
                             </div>
                             <a
                                 href="/winners"
                                 className="inline-block px-6 py-3 bg-gradient-to-r from-gold-400 to-gold-600 text-black rounded-lg shadow-lg hover:from-gold-500 hover:to-gold-700 transition-colors duration-300 font-semibold"
                             >
-                                View Winners
+                                Ver Ganadores
                             </a>
                         </div>
                     )}
@@ -256,14 +256,14 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
                                     disabled={isSubmitting}
                                 >
                                     <Save className="w-4 h-4 inline-block mr-2" />
-                                    {isSubmitting ? 'Saving...' : 'Save Changes'}
+                                    {isSubmitting ? 'Guardando...' : 'Guardar Cambios'}
                                 </button>
                                 <button
                                     className="px-6 py-3 bg-transparent border-2 border-gold-500 text-gold-500 rounded-lg shadow-lg hover:bg-gold-500/10 transition-colors duration-300 font-semibold"
                                     onClick={handleCancelEdit}
                                 >
                                     <X className="w-4 h-4 inline-block mr-2" />
-                                    Cancel
+                                    Cancelar
                                 </button>
                             </>
                         ) : predictions.length > 0 ? (
@@ -272,7 +272,7 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
                                 onClick={() => setIsEditing(true)}
                             >
                                 <Edit2 className="w-4 h-4 inline-block mr-2" />
-                                Edit Predictions
+                                Editar Predicciones
                             </button>
                         ) : (
                             <button
@@ -281,7 +281,7 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
                                 disabled={isSubmitting || predictions.length === 0}
                             >
                                 <Save className="w-4 h-4 inline-block mr-2" />
-                                {isSubmitting ? 'Saving...' : 'Save Predictions'}
+                                {isSubmitting ? 'Guardando...' : 'Guardar Predicciones'}
                             </button>
                         )
                     )}
