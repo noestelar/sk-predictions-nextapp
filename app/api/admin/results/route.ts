@@ -71,7 +71,10 @@ export async function POST(req: NextRequest) {
             gifteeId,
         }));
 
-        await prisma.result.createMany({ data });
+        // Create results one by one since createMany isn't supported
+        for (const result of data) {
+            await prisma.result.create({ data: result });
+        }
 
         return NextResponse.json({ message: 'Results saved successfully.' });
     } catch (error) {

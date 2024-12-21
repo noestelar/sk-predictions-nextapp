@@ -70,7 +70,10 @@ export async function POST(req: NextRequest) {
             participantIdGiftee: gifteeId,
         }));
 
-        await prisma.prediction.createMany({ data });
+        // Create predictions one by one since createMany is not supported
+        for (const predictionData of data) {
+            await prisma.prediction.create({ data: predictionData });
+        }
 
         return NextResponse.json({ message: 'Predictions saved successfully.' });
     } catch (error) {
