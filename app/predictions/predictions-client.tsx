@@ -181,8 +181,16 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
                         </div>
                     )}
                     {isPastCutoff && (
-                        <div className="mt-4 p-4 bg-red-500/20 border border-red-500 rounded-lg text-red-300">
-                            Predictions are now closed. The cutoff time has passed.
+                        <div className="mt-4">
+                            <div className="p-4 bg-red-500/20 border border-red-500 rounded-lg text-red-300 mb-4">
+                                Predictions are now closed. The cutoff time has passed.
+                            </div>
+                            <a
+                                href="/winners"
+                                className="inline-block px-6 py-3 bg-gradient-to-r from-gold-400 to-gold-600 text-black rounded-lg shadow-lg hover:from-gold-500 hover:to-gold-700 transition-colors duration-300 font-semibold"
+                            >
+                                View Winners
+                            </a>
                         </div>
                     )}
                     {selectionMessage && (
