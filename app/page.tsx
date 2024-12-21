@@ -31,7 +31,7 @@ export default function HomePage() {
         </div>
         <div className="relative text-center space-y-6 max-w-md mx-auto">
           <div className="w-12 h-12 mx-auto mb-4 bg-gold-500/20 rounded-full"></div>
-          <h1 className="text-4xl font-bold mb-2 text-white">¡Bienvenido a Predicciones de Amigo Secreto!</h1>
+          <h1 className="text-4xl font-bold mb-2 text-white">¡Bienvenido a Predicciones SKToxqui!</h1>
           <p className="text-white mb-6">Inicia sesión para comenzar a hacer tus predicciones.</p>
           <button
             onClick={() => signIn('facebook')}
