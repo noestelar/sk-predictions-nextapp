@@ -1,10 +1,10 @@
 import { execSync } from 'child_process';
 
 // Get the production URL from environment
-const prodDbUrl = process.env.POSTGRES_URL_NON_POOLING;
+const prodDbUrl = process.env.POSTGRES_PRISMA_URL;
 
 if (!prodDbUrl) {
-  console.error('Error: POSTGRES_URL_NON_POOLING environment variable is not set');
+  console.error('Error: POSTGRES_PRISMA_URL environment variable is not set');
   process.exit(1);
 }
 

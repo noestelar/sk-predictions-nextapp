@@ -2,10 +2,24 @@
 
 import { useSession, signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+
+const VALID_NAMES = [
+  'Noé',
+  'Miriam',
+  'Martín',
+  'Iris',
+  'Ilse',
+  'Alex',
+  'Esteban Cesar',
+  'Brenda',
+  'Queso'
+];
 
 export default function HomePage() {
   const { status } = useSession();
   const router = useRouter();
+  const [selectedName, setSelectedName] = useState('');
 
   // Show loading state while checking authentication
   if (status === 'loading') {
@@ -22,6 +36,14 @@ export default function HomePage() {
     return null;
   }
 
+  const handleLogin = async () => {
+    if (!selectedName) return;
+    await signIn('credentials', {
+      name: selectedName,
+      callbackUrl: '/predictions'
+    });
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-black text-gold-100">
       <div className="relative w-full h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-black">
@@ -32,15 +54,25 @@ export default function HomePage() {
         <div className="relative text-center space-y-6 max-w-md mx-auto">
           <div className="w-12 h-12 mx-auto mb-4 bg-gold-500/20 rounded-full"></div>
           <h1 className="text-4xl font-bold mb-2 text-white">¡Bienvenido a Predicciones SKToxqui!</h1>
-          <p className="text-white mb-6">Inicia sesión para comenzar a hacer tus predicciones.</p>
-          <button
-            onClick={() => signIn('facebook')}
-            className="w-full bg-gold-600 text-white py-3 px-6 rounded-lg shadow-lg hover:bg-gold-500 transition-colors duration-300 font-semibold flex items-center justify-center space-x-2"
+          <p className="text-white mb-6">Selecciona tu nombre para comenzar</p>
+          <select
+            value={selectedName}
+            onChange={(e) => setSelectedName(e.target.value)}
+            className="w-full bg-gray-800 text-white py-3 px-6 rounded-lg shadow-lg border-2 border-gold-500 focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent mb-4"
           >
-            <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-            </svg>
-            <span>Iniciar sesión con Facebook</span>
+            <option value="">Selecciona tu nombre</option>
+            {VALID_NAMES.map((name) => (
+              <option key={name} value={name}>
+                {name}
+              </option>
+            ))}
+          </select>
+          <button
+            onClick={handleLogin}
+            disabled={!selectedName}
+            className="w-full bg-gold-600 text-white py-3 px-6 rounded-lg shadow-lg hover:bg-gold-500 transition-colors duration-300 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Iniciar Sesión
           </button>
         </div>
       </div>
