@@ -43,7 +43,6 @@ model User {
   accounts      Account[]
   sessions      Session[]
   predictions   Prediction[]
-  participant   Participant? @relation(fields: [name], references: [name])
 }
 
 model VerificationToken {
@@ -60,7 +59,6 @@ model Participant {
   profilePic    String
   gifterResults Result[]     @relation("GifterResults")
   gifteeResults Result[]     @relation("GifteeResults")
-  users         User[]
 }
 
 model Prediction {
