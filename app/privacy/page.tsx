@@ -38,7 +38,7 @@ export default function PrivacyPolicy() {
               <li>Authenticate you through Facebook</li>
               <li>Send you technical notices and support messages</li>
               <li>Communicate with you about our services and updates</li>
-              <li>Ensure compliance with Facebook's Platform Policies</li>
+              <li>Ensure compliance with Facebook&apos;s Platform Policies</li>
             </ul>
           </section>
 
@@ -86,7 +86,7 @@ export default function PrivacyPolicy() {
 
           <section>
             <h2 className="text-xl font-semibold text-gray-800 mb-3">Changes to This Policy</h2>
-            <p>We may update this privacy policy from time to time. We will notify you of any material changes by posting the new privacy policy on this page and updating the "Last Updated" date.</p>
+            <p>We may update this privacy policy from time to time. We will notify you of any material changes by posting the new privacy policy on this page and updating the &quot;Last Updated&quot; date.</p>
             <p className="mt-2">Last updated: {new Date().toLocaleDateString()}</p>
           </section>
         </div>
