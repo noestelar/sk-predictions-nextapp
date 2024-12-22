@@ -1,8 +1,11 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Prisma } from '@prisma/client';
+
 const prisma = new PrismaClient();
 
 async function seed() {
     try {
+        console.log('Starting database seed...');
+
         // First check if we already have participants to avoid duplicate seeding
         const existingParticipants = await prisma.participant.findMany();
         if (existingParticipants.length > 0) {
@@ -10,23 +13,28 @@ async function seed() {
             return;
         }
 
-        await prisma.participant.createMany({
-            data: [
-                { name: 'Miriam', profilePic: '/images/miriam.jpg' },
-                { name: 'Noé', profilePic: '/images/noe.jpg' },
-                { name: 'Queso', profilePic: '/images/queso.jpg' },
-                { name: 'Martín', profilePic: '/images/martin.jpg' },
-                { name: 'Esteban', profilePic: '/images/esteban.jpg' },
-                { name: 'Ilse', profilePic: '/images/ilse.jpg' },
-                { name: 'Cesar', profilePic: '/images/cesar.jpg' },
-                { name: 'Alex', profilePic: '/images/alex.jpg' },
-                { name: 'Iris', profilePic: '/images/iris.jpg' },
-            ],
+        // Create all participants in a transaction to ensure data consistency
+        await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+            await tx.participant.createMany({
+                data: [
+                    { name: 'Miriam', profilePic: '/images/miriam.jpg' },
+                    { name: 'Noé', profilePic: '/images/noe.jpg' },
+                    { name: 'Queso', profilePic: '/images/queso.jpg' },
+                    { name: 'Martín', profilePic: '/images/martin.jpg' },
+                    { name: 'Esteban', profilePic: '/images/esteban.jpg' },
+                    { name: 'Ilse', profilePic: '/images/ilse.jpg' },
+                    { name: 'Cesar', profilePic: '/images/cesar.jpg' },
+                    { name: 'Alex', profilePic: '/images/alex.jpg' },
+                    { name: 'Iris', profilePic: '/images/iris.jpg' },
+                ],
+                skipDuplicates: true,
+            });
         });
+
         console.log('Database seeded successfully!');
     } catch (error) {
         console.error('Error seeding database:', error);
-        // Don't exit with error in production, just log it
+        // In production, log the error but don't throw
         if (process.env.NODE_ENV === 'development') {
             throw error;
         }
@@ -34,5 +42,11 @@ async function seed() {
         await prisma.$disconnect();
     }
 }
+
+// Handle any unhandled promise rejections
+process.on('unhandledRejection', (error) => {
+    console.error('Unhandled Promise Rejection:', error);
+    process.exit(1);
+});
 
 seed();
