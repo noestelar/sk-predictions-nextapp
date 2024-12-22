@@ -3,6 +3,9 @@ import PredictionsClient from './predictions-client';
 import prisma from '@/lib/prisma';
 import { Suspense } from 'react';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 async function ParticipantsList() {
   const participants = await prisma.participant.findMany();
   const cutoffTime = await prisma.cutoffTime.findFirst({
