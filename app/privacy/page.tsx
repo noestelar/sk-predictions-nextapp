@@ -9,7 +9,7 @@ export default function PrivacyPolicy() {
         <div className="space-y-6 text-gray-600">
           <section>
             <h2 className="text-xl font-semibold text-gray-800 mb-3">Introduction</h2>
-            <p>This privacy policy describes how SKToxqui Predictions ("we", "our", or "us") collects, uses, and shares your information when you use our service at https://sk-predictions-nextapp.vercel.app ("the Service"). This policy applies to all users of our service, including those who access it through Facebook.</p>
+            <p>This privacy policy describes how SKToxqui Predictions (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;) collects, uses, and shares your information when you use our service at https://sk-predictions-nextapp.vercel.app (&quot;the Service&quot;). This policy applies to all users of our service, including those who access it through Facebook.</p>
           </section>
 
           <section>
