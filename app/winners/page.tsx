@@ -4,6 +4,9 @@ import prisma from '@/lib/prisma';
 import WinnersClient from './winners-client';
 import { Suspense } from 'react';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 async function WinnersList() {
     const session = await getServerSession();
     if (!session?.user) {
@@ -52,13 +55,11 @@ async function WinnersList() {
 
 export default function WinnersPage() {
     return (
-        <Suspense
-            fallback={
-                <div className="flex items-center justify-center min-h-screen">
-                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gold-500"></div>
-                </div>
-            }
-        >
+        <Suspense fallback={
+            <div className="flex items-center justify-center min-h-screen">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gold-500"></div>
+            </div>
+        }>
             <WinnersList />
         </Suspense>
     );
