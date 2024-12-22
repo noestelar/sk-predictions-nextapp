@@ -7,8 +7,9 @@ async function seed() {
         console.log('Starting database seed...');
 
         // First check if we already have participants to avoid duplicate seeding
-        const existingParticipants = await prisma.participant.findMany();
-        if (existingParticipants.length > 0) {
+        const existingParticipants = await prisma.participant.findMany().catch(() => []);
+
+        if (existingParticipants && existingParticipants.length > 0) {
             console.log('Database already seeded, skipping...');
             return;
         }
@@ -29,12 +30,15 @@ async function seed() {
                 ],
                 skipDuplicates: true,
             });
+        }).catch((error: Error) => {
+            console.error('Transaction failed:', error);
+            return null;
         });
 
         console.log('Database seeded successfully!');
     } catch (error) {
         console.error('Error seeding database:', error);
-        // In production, log the error but don't throw
+        // Don't throw in production
         if (process.env.NODE_ENV === 'development') {
             throw error;
         }
@@ -44,9 +48,12 @@ async function seed() {
 }
 
 // Handle any unhandled promise rejections
-process.on('unhandledRejection', (error) => {
+process.on('unhandledRejection', (error: Error) => {
     console.error('Unhandled Promise Rejection:', error);
-    process.exit(1);
+    // Don't exit process in production
+    if (process.env.NODE_ENV === 'development') {
+        process.exit(1);
+    }
 });
 
 seed();

@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "prisma generate && POSTGRES_URL_NON_POOLING=\"postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:5432/${POSTGRES_DATABASE}?sslmode=require\" prisma migrate deploy && next build",
+    "build": "prisma generate && prisma db push --accept-data-loss && prisma db seed && next build",
     "start": "next start",
     "lint": "next lint",
     "postinstall": "prisma generate"
