@@ -11,15 +11,13 @@ if (!prodDbUrl) {
 try {
   // Push the schema to production
   console.log('Pushing schema to production database...');
-  execSync(`npx prisma db push --schema ./prisma/schema.prisma`, {
-    env: { ...process.env, DATABASE_URL: prodDbUrl },
+  execSync(`DATABASE_URL="${prodDbUrl}" npx prisma db push --schema ./prisma/schema.prisma`, {
     stdio: 'inherit'
   });
 
   // Run the seed script
   console.log('\nRunning database seed...');
-  execSync(`npx prisma db seed`, {
-    env: { ...process.env, DATABASE_URL: prodDbUrl },
+  execSync(`DATABASE_URL="${prodDbUrl}" npx prisma db seed`, {
     stdio: 'inherit'
   });
 

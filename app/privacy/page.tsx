@@ -9,23 +9,21 @@ export default function PrivacyPolicy() {
         <div className="space-y-6 text-gray-600">
           <section>
             <h2 className="text-xl font-semibold text-gray-800 mb-3">Introduction</h2>
-            <p>This privacy policy describes how SKToxqui Predictions (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;) collects, uses, and shares your information when you use our service at https://sk-predictions-nextapp.vercel.app (&quot;the Service&quot;). This policy applies to all users of our service, including those who access it through Facebook.</p>
+            <p>This privacy policy describes how SKToxqui Predictions (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;) collects, uses, and shares your information when you use our service at https://sk-predictions-nextapp.vercel.app (&quot;the Service&quot;). This policy applies to all users of our service.</p>
           </section>
 
           <section>
             <h2 className="text-xl font-semibold text-gray-800 mb-3">Information We Collect</h2>
             <p>We collect information that you provide directly to us when you:</p>
             <ul className="list-disc pl-5 mt-2">
-              <li>Create an account or log in through Facebook</li>
+              <li>Log in using your assigned name (limited to: Noé, Miriam, Martín, Iris, Ilse, Alex, Esteban Cesar, Brenda, Queso)</li>
               <li>Make predictions and participate in our service</li>
-              <li>Interact with our Facebook application</li>
               <li>Contact us for support</li>
             </ul>
-            <p className="mt-2">When you log in through Facebook, we may receive:</p>
+            <p className="mt-2">When you log in, we collect:</p>
             <ul className="list-disc pl-5 mt-2">
-              <li>Your public profile information</li>
-              <li>Email address</li>
-              <li>Other information you explicitly authorize</li>
+              <li>Your selected name from the pre-approved list</li>
+              <li>Basic usage data to provide our service</li>
             </ul>
           </section>
 
@@ -35,10 +33,9 @@ export default function PrivacyPolicy() {
             <ul className="list-disc pl-5 mt-2">
               <li>Provide, maintain, and improve our services</li>
               <li>Process and complete transactions</li>
-              <li>Authenticate you through Facebook</li>
+              <li>Authenticate you using your assigned name</li>
               <li>Send you technical notices and support messages</li>
               <li>Communicate with you about our services and updates</li>
-              <li>Ensure compliance with Facebook&apos;s Platform Policies</li>
             </ul>
           </section>
 
@@ -47,7 +44,6 @@ export default function PrivacyPolicy() {
             <p>We do not sell or rent your personal information to third parties. We may share your information in the following circumstances:</p>
             <ul className="list-disc pl-5 mt-2">
               <li>With your explicit consent</li>
-              <li>With Facebook, as necessary for the operation of our application</li>
               <li>To comply with legal obligations</li>
               <li>To protect our rights and prevent fraud</li>
               <li>With service providers who assist in our operations</li>
@@ -64,9 +60,7 @@ export default function PrivacyPolicy() {
             <p>You have the right to:</p>
             <ul className="list-disc pl-5 mt-2">
               <li>Access your personal information</li>
-              <li>Correct inaccurate data</li>
               <li>Request deletion of your data</li>
-              <li>Revoke Facebook permissions</li>
               <li>Object to our use of your data</li>
               <li>Opt-out of marketing communications</li>
             </ul>

@@ -1,6 +1,6 @@
 datasource db {
   provider = "postgresql"
-  url      = env("POSTGRES_URL_NON_POOLING")
+  url      = env("DATABASE_URL")
 }
 
 generator client {
@@ -36,13 +36,14 @@ model Session {
 
 model User {
   id            String       @id @default(cuid())
-  name          String?
+  name          String?      @unique
   email         String?      @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
   predictions   Prediction[]
+  participant   Participant? @relation(fields: [name], references: [name])
 }
 
 model VerificationToken {
@@ -54,11 +55,12 @@ model VerificationToken {
 }
 
 model Participant {
-  id          String @id @default(cuid())
-  name        String
-  profilePic  String
-  gifterResults Result[] @relation("GifterResults")
-  gifteeResults Result[] @relation("GifteeResults")
+  id            String       @id @default(cuid())
+  name          String       @unique
+  profilePic    String
+  gifterResults Result[]     @relation("GifterResults")
+  gifteeResults Result[]     @relation("GifteeResults")
+  users         User[]
 }
 
 model Prediction {

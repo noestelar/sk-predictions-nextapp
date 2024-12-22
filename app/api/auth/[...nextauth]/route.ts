@@ -1,5 +1,5 @@
 import NextAuth from 'next-auth';
-import FacebookProvider from 'next-auth/providers/facebook';
+import CredentialsProvider from 'next-auth/providers/credentials';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import prisma from '@/lib/prisma';
 
@@ -21,10 +21,42 @@ const handler = NextAuth({
     debug: true,
     adapter: PrismaAdapter(prisma),
     providers: [
-        FacebookProvider({
-            clientId: process.env.FACEBOOK_CLIENT_ID!,
-            clientSecret: process.env.FACEBOOK_CLIENT_SECRET!,
-        }),
+        CredentialsProvider({
+            name: 'Name',
+            credentials: {
+                name: { label: "Name", type: "text" }
+            },
+            async authorize(credentials) {
+                if (!credentials?.name) return null;
+
+                // Find the participant with the given name
+                const participant = await prisma.participant.findUnique({
+                    where: { name: credentials.name }
+                });
+
+                if (!participant) return null;
+
+                // Find or create a user for this participant
+                let user = await prisma.user.findUnique({
+                    where: { name: participant.name }
+                });
+
+                if (!user) {
+                    user = await prisma.user.create({
+                        data: {
+                            name: participant.name,
+                            image: participant.profilePic
+                        }
+                    });
+                }
+
+                return {
+                    id: user.id,
+                    name: user.name,
+                    image: user.image
+                };
+            }
+        })
     ],
     secret: process.env.NEXTAUTH_SECRET,
     session: {
