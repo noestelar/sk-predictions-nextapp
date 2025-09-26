@@ -1,5 +1,5 @@
-import NextAuth from 'next-auth';
-import CredentialsProvider from 'next-auth/providers/credentials';
+import NextAuth, { type AuthOptions } from 'next-auth';
+import FacebookProvider from 'next-auth/providers/facebook';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import prisma from '@/lib/prisma';
 
@@ -17,43 +17,19 @@ declare module 'next-auth' {
     }
 }
 
-const handler = NextAuth({
-    debug: true,
+export const authOptions: AuthOptions = {
+    debug: false,
     adapter: PrismaAdapter(prisma),
     providers: [
-        CredentialsProvider({
-            name: 'Name',
-            credentials: {
-                name: { label: "Name", type: "text" }
-            },
-            async authorize(credentials) {
-                if (!credentials?.name) return null;
-
-                // Find the participant with the given name
-                const participant = await prisma.participant.findUnique({
-                    where: { name: credentials.name }
-                });
-
-                if (!participant) return null;
-
-                // Find or create a user for this participant
-                let user = await prisma.user.findUnique({
-                    where: { name: participant.name }
-                });
-
-                if (!user) {
-                    user = await prisma.user.create({
-                        data: {
-                            name: participant.name,
-                            image: participant.profilePic
-                        }
-                    });
-                }
-
+        FacebookProvider({
+            clientId: process.env.FACEBOOK_CLIENT_ID!,
+            clientSecret: process.env.FACEBOOK_CLIENT_SECRET!,
+            profile(profile) {
                 return {
-                    id: user.id,
-                    name: user.name,
-                    image: user.image
+                    id: profile.id,
+                    name: profile.name,
+                    email: profile.email,
+                    image: profile.picture?.data?.url ?? null
                 };
             }
         })
@@ -70,10 +46,14 @@ const handler = NextAuth({
             return session;
         },
         async jwt({ token, user }) {
-            if (user) token.id = user.id;
+            if (user) {
+                token.id = user.id;
+            }
             return token;
         },
     },
-});
+};
+
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };
