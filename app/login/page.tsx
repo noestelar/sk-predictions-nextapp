@@ -12,13 +12,6 @@ import {
   CardHeader,
   CardTitle
 } from '@/components/ui/card'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select'
 import { Facebook } from 'lucide-react'
 
 const VALID_NAMES = [
@@ -53,18 +46,24 @@ export default function LoginPage() {
           <CardDescription>Únete a la diversión festiva con tus amigos</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Select value={selectedName} onValueChange={setSelectedName}>
-            <SelectTrigger aria-label="Selecciona tu nombre">
-              <SelectValue placeholder="Selecciona tu nombre" />
-            </SelectTrigger>
-            <SelectContent>
+          <div className="space-y-2 text-left">
+            <label htmlFor="login-name" className="text-sm font-medium text-muted-foreground">
+              Escribe tu nombre
+            </label>
+            <input
+              id="login-name"
+              value={selectedName}
+              onChange={(e) => setSelectedName(e.target.value)}
+              list="login-valid-names"
+              placeholder="Ingresa tu nombre"
+              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            />
+            <datalist id="login-valid-names">
               {VALID_NAMES.map((name) => (
-                <SelectItem key={name} value={name}>
-                  {name}
-                </SelectItem>
+                <option key={name} value={name} />
               ))}
-            </SelectContent>
-          </Select>
+            </datalist>
+          </div>
           <div className="relative py-2 text-center text-sm text-muted-foreground">
             <span className="px-2 bg-card">o continúa con</span>
           </div>
