@@ -1,41 +1,18 @@
 'use client'
 
 import { signIn } from 'next-auth/react'
-import { useState } from 'react'
 
 import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle
 } from '@/components/ui/card'
 import { Facebook } from 'lucide-react'
 
-const VALID_NAMES = [
-  'Noé',
-  'Miriam',
-  'Martín',
-  'Iris',
-  'Ilse',
-  'Alex',
-  'Esteban Cesar',
-  'Brenda',
-  'Queso'
-]
-
 export default function LoginPage() {
-  const [selectedName, setSelectedName] = useState('')
-
-  const handleLogin = async () => {
-    if (!selectedName) return
-    await signIn('credentials', {
-      name: selectedName,
-      callbackUrl: '/predictions'
-    })
-  }
 
   return (
     <div className="relative flex min-h-screen items-center justify-center bg-gradient-to-br from-background via-background to-muted px-4 py-16">
@@ -46,27 +23,9 @@ export default function LoginPage() {
           <CardDescription>Únete a la diversión festiva con tus amigos</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="space-y-2 text-left">
-            <label htmlFor="login-name" className="text-sm font-medium text-muted-foreground">
-              Escribe tu nombre
-            </label>
-            <input
-              id="login-name"
-              value={selectedName}
-              onChange={(e) => setSelectedName(e.target.value)}
-              list="login-valid-names"
-              placeholder="Ingresa tu nombre"
-              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            />
-            <datalist id="login-valid-names">
-              {VALID_NAMES.map((name) => (
-                <option key={name} value={name} />
-              ))}
-            </datalist>
-          </div>
-          <div className="relative py-2 text-center text-sm text-muted-foreground">
-            <span className="px-2 bg-card">o continúa con</span>
-          </div>
+          <p className="text-sm text-muted-foreground">
+            Para ingresar, utiliza tu cuenta de Facebook asociada a la dinámica.
+          </p>
           <Button
             variant="outline"
             className="w-full"
@@ -76,11 +35,6 @@ export default function LoginPage() {
             Iniciar sesión con Facebook
           </Button>
         </CardContent>
-        <CardFooter>
-          <Button className="w-full" onClick={handleLogin} disabled={!selectedName}>
-            Iniciar sesión
-          </Button>
-        </CardFooter>
       </Card>
     </div>
   )
