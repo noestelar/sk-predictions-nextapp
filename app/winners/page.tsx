@@ -1,8 +1,13 @@
-import { getServerSession } from 'next-auth';
-import { redirect } from 'next/navigation';
-import prisma from '@/lib/prisma';
-import WinnersClient from './winners-client';
-import { Suspense } from 'react';
+import { getServerSession } from 'next-auth'
+import { redirect } from 'next/navigation'
+import prisma from '@/lib/prisma'
+import WinnersClient from './winners-client'
+import { Suspense } from 'react'
+import { Loader2 } from 'lucide-react'
+
+import { redis } from '@/lib/redis'
+
+const LEADERBOARD_CACHE_KEY = 'leaderboard:latest'
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -13,15 +18,25 @@ async function WinnersList() {
         redirect('/login');
     }
 
-    // Fetch all predictions and users
-    const predictions = await prisma.prediction.findMany();
-    const users = await prisma.user.findMany();
+    if (redis) {
+        const cached = await redis.get(LEADERBOARD_CACHE_KEY);
+        if (cached) {
+            return <WinnersClient scores={JSON.parse(cached)} />;
+        }
+    }
 
-    // Fetch actual results
-    const results = await prisma.result.findMany();
+    const [predictions, users, results] = await Promise.all([
+        prisma.prediction.findMany(),
+        prisma.user.findMany(),
+        prisma.result.findMany()
+    ]);
 
-    // Calculate scores for each user
-    const userScores = new Map();
+    const userScores = new Map<string, {
+        userId: string;
+        userName: string;
+        correctGuesses: number;
+        totalGuesses: number;
+    }>();
 
     predictions.forEach((prediction) => {
         const correctGuess = results.some(
@@ -30,7 +45,7 @@ async function WinnersList() {
                 result.gifteeId === prediction.participantIdGiftee
         );
 
-        const user = users.find(u => u.id === prediction.userId);
+        const user = users.find((u) => u.id === prediction.userId);
         const currentScore = userScores.get(prediction.userId) || {
             userId: prediction.userId,
             userName: user?.name || 'Unknown User',
@@ -45,22 +60,27 @@ async function WinnersList() {
         });
     });
 
-    // Convert scores to array and sort by correct guesses
     const sortedScores = Array.from(userScores.values()).sort(
         (a, b) => b.correctGuesses - a.correctGuesses
     );
+
+    if (redis) {
+        await redis.set(LEADERBOARD_CACHE_KEY, JSON.stringify(sortedScores), 'EX', 30);
+    }
 
     return <WinnersClient scores={sortedScores} />;
 }
 
 export default function WinnersPage() {
-    return (
-        <Suspense fallback={
-            <div className="flex items-center justify-center min-h-screen">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gold-500"></div>
-            </div>
-        }>
-            <WinnersList />
-        </Suspense>
-    );
-} 
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center bg-background">
+          <Loader2 className="h-10 w-10 animate-spin text-primary" />
+        </div>
+      }
+    >
+      <WinnersList />
+    </Suspense>
+  )
+}

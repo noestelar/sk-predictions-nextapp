@@ -1,7 +1,8 @@
 // Server Component for data fetching
-import PredictionsClient from './predictions-client';
-import prisma from '@/lib/prisma';
-import { Suspense } from 'react';
+import PredictionsClient from './predictions-client'
+import prisma from '@/lib/prisma'
+import { Suspense } from 'react'
+import { Loader2 } from 'lucide-react'
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -26,12 +27,14 @@ async function ParticipantsList() {
 
 export default function PredictionsPage() {
   return (
-    <Suspense fallback={
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gold-500"></div>
-      </div>
-    }>
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center bg-background">
+          <Loader2 className="h-10 w-10 animate-spin text-primary" />
+        </div>
+      }
+    >
       <ParticipantsList />
     </Suspense>
-  );
+  )
 }

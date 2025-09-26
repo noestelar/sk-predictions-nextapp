@@ -5,6 +5,10 @@ import { AuthOptions } from 'next-auth';
 import FacebookProvider from 'next-auth/providers/facebook';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 
+import { redis } from '@/lib/redis';
+
+const LEADERBOARD_CACHE_KEY = 'leaderboard:latest';
+
 const authOptions: AuthOptions = {
     adapter: PrismaAdapter(prisma),
     providers: [
@@ -74,6 +78,10 @@ export async function POST(req: NextRequest) {
         // Create results one by one since createMany isn't supported
         for (const result of data) {
             await prisma.result.create({ data: result });
+        }
+
+        if (redis) {
+            await redis.del(LEADERBOARD_CACHE_KEY);
         }
 
         return NextResponse.json({ message: 'Results saved successfully.' });

@@ -95,4 +95,4 @@ ON CONFLICT (name) DO UPDATE SET
 -- Set initial cutoff time (one week from now)
 INSERT INTO "cutoff_time" ("datetime", "updatedAt")
 VALUES (CURRENT_TIMESTAMP + INTERVAL '7 days', CURRENT_TIMESTAMP)
-ON CONFLICT DO NOTHING; 
+ON CONFLICT DO NOTHING;

@@ -1,214 +1,260 @@
-'use client';
+'use client'
 
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
-import { Gift, Save, X } from 'lucide-react';
-import { Participant } from '@prisma/client';
-import Image from 'next/image';
+import React, { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { useSession } from 'next-auth/react'
+import { Gift, Save, X, Loader2 } from 'lucide-react'
+import { Participant } from '@prisma/client'
+import Image from 'next/image'
+
+import { Button } from '@/components/ui/button'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { Badge } from '@/components/ui/badge'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle
+} from '@/components/ui/card'
+import { cn } from '@/lib/utils'
 
 interface Result {
-    gifterId: string;
-    gifteeId: string;
-    gifter: Participant;
-    giftee: Participant;
+  gifterId: string
+  gifteeId: string
+  gifter: Participant
+  giftee: Participant
 }
 
 export default function ResultsPage() {
-    const [participants, setParticipants] = useState<Participant[]>([]);
-    const [selectedPair, setSelectedPair] = useState<string[]>([]);
-    const [results, setResults] = useState<string[][]>([]);
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
-    const [selectionMessage, setSelectionMessage] = useState<string>('');
-    const router = useRouter();
-    const { status } = useSession({
-        required: true,
-        onUnauthenticated() {
-            router.push('/');
-        },
-    });
+  const [participants, setParticipants] = useState<Participant[]>([])
+  const [selectedPair, setSelectedPair] = useState<string[]>([])
+  const [results, setResults] = useState<string[][]>([])
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const [selectionMessage, setSelectionMessage] = useState<string>('Selecciona primero quién regala y después quién recibe.')
+  const [errorMessage, setErrorMessage] = useState('')
+  const router = useRouter()
+  const { status } = useSession({
+    required: true,
+    onUnauthenticated() {
+      router.push('/')
+    }
+  })
 
-    useEffect(() => {
-        async function fetchData() {
-            try {
-                // Fetch participants
-                const participantsRes = await fetch('/api/participants');
-                if (!participantsRes.ok) {
-                    throw new Error('Failed to fetch participants');
-                }
-                const participantsData = await participantsRes.json();
-                setParticipants(participantsData.participants);
-
-                // Fetch existing results
-                const resultsRes = await fetch('/api/admin/results');
-                if (!resultsRes.ok) {
-                    throw new Error('Failed to fetch results');
-                }
-                const resultsData = await resultsRes.json();
-                const existingResults = resultsData.results.map((r: Result) => [r.gifterId, r.gifteeId]);
-                setResults(existingResults);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            } finally {
-                setIsLoading(false);
-            }
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const participantsRes = await fetch('/api/participants')
+        if (!participantsRes.ok) {
+          throw new Error('No pudimos cargar a los participantes')
         }
-        fetchData();
-    }, []);
+        const participantsData = await participantsRes.json()
+        setParticipants(participantsData.participants)
 
-    // Show loading state while checking authentication
-    if (status === 'loading' || isLoading) {
-        return (
-            <div className="min-h-screen bg-black flex items-center justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gold-500"></div>
-            </div>
-        );
+        const resultsRes = await fetch('/api/admin/results')
+        if (!resultsRes.ok) {
+          throw new Error('No pudimos cargar los resultados guardados')
+        }
+        const resultsData = await resultsRes.json()
+        const existingResults = resultsData.results.map((r: Result) => [r.gifterId, r.gifteeId])
+        setResults(existingResults)
+        if (existingResults.length > 0) {
+          setSelectionMessage('Haz clic en cualquier pareja para actualizarla o limpia todo para empezar de nuevo.')
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error)
+        const message = error instanceof Error ? error.message : 'No pudimos cargar la información inicial.'
+        setErrorMessage(message)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    fetchData()
+  }, [])
+
+  const getGifteeForGifter = (gifterId: string) => {
+    const pair = results.find(([g]) => g === gifterId)
+    return pair ? pair[1] : null
+  }
+
+  const getGifterForGiftee = (gifteeId: string) => {
+    const pair = results.find(([gifter, giftee]) => giftee === gifteeId)
+    return pair ? pair[0] : null
+  }
+
+  const handleSelectParticipant = (participantId: string) => {
+    setSelectionMessage('')
+
+    if (selectedPair.length === 0) {
+      const participant = participants.find((p) => p.id === participantId)
+      setSelectedPair([participantId])
+      setSelectionMessage(`Seleccionaste a ${participant?.name} como regalador. Ahora elige a quién le regaló.`)
+      return
     }
 
-    const handleSelectParticipant = (participantId: string) => {
-        if (selectedPair.length === 0) {
-            setSelectedPair([participantId]);
-            setSelectionMessage('Now select who they will give a gift to');
-        } else if (selectedPair[0] === participantId) {
-            setSelectedPair([]);
-            setSelectionMessage('');
-        } else {
-            // Check if the gifter is already assigned
-            const existingGifterPair = results.find(pair => pair[0] === selectedPair[0]);
-            if (existingGifterPair) {
-                const updatedResults = results.map(pair =>
-                    pair[0] === selectedPair[0] ? [selectedPair[0], participantId] : pair
-                );
-                setResults(updatedResults);
-            } else {
-                setResults([...results, [selectedPair[0], participantId]]);
-            }
-            setSelectedPair([]);
-            setSelectionMessage('');
-        }
-    };
+    if (selectedPair[0] === participantId) {
+      setSelectedPair([])
+      setSelectionMessage('Selección cancelada.')
+      return
+    }
 
-    const getGifteeForGifter = (gifterId: string) => {
-        const pair = results.find(([g]) => g === gifterId);
-        return pair ? pair[1] : null;
-    };
+    const updatedPair: string[] = [selectedPair[0], participantId]
+    const existingGifterPair = results.find((pair) => pair[0] === updatedPair[0])
 
-    const getGifterForGiftee = (gifteeId: string) => {
-        const pair = results.find(([gifter, giftee]) => giftee === gifteeId);
-        return pair ? pair[0] : null;
-    };
+    if (existingGifterPair) {
+      const updatedResults = results.map((pair) => (pair[0] === updatedPair[0] ? updatedPair : pair))
+      setResults(updatedResults)
+    } else {
+      setResults([...results, updatedPair])
+    }
 
-    const handleSaveResults = async () => {
-        if (isSubmitting) return;
+    const gifter = participants.find((p) => p.id === updatedPair[0])
+    const giftee = participants.find((p) => p.id === updatedPair[1])
+    setSelectionMessage(`${gifter?.name} le regaló a ${giftee?.name}. Puedes seguir asignando más parejas.`)
+    setSelectedPair([])
+  }
 
-        try {
-            setIsSubmitting(true);
-            const response = await fetch('/api/admin/results', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ results }),
-            });
+  const handleSaveResults = async () => {
+    if (isSubmitting || results.length === 0) return
 
-            if (!response.ok) {
-                throw new Error('Failed to save results');
-            }
+    try {
+      setIsSubmitting(true)
+      setErrorMessage('')
 
-            alert('Results saved successfully!');
-            router.push('/admin');
-        } catch (error) {
-            console.error('Error saving results:', error);
-            alert('Failed to save results. Please try again.');
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
+      const response = await fetch('/api/admin/results', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ results })
+      })
 
-    const handleClearResults = () => {
-        setResults([]);
-        setSelectedPair([]);
-        setSelectionMessage('');
-    };
+      if (!response.ok) {
+        const data = await response.json()
+        throw new Error(data.error || 'No se pudieron guardar los resultados')
+      }
 
+      router.push('/admin')
+    } catch (error) {
+      console.error('Error saving results:', error)
+      const message = error instanceof Error ? error.message : 'No se pudieron guardar los resultados. Intenta nuevamente.'
+      setErrorMessage(message)
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  const handleClearResults = () => {
+    setResults([])
+    setSelectedPair([])
+    setSelectionMessage('Asignaciones reiniciadas. Selecciona quién regala y quién recibe.')
+  }
+
+  if (status === 'loading' || isLoading) {
     return (
-        <div className="min-h-screen bg-black text-white p-8">
-            <div className="max-w-6xl mx-auto">
-                <div className="text-center mb-8">
-                    <Gift className="text-gold-500 mx-auto mb-4" size={48} />
-                    <h1 className="text-4xl font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-gold-400 to-gold-600">
-                        Set Gift-Giving Results
-                    </h1>
-                    <p className="text-gold-300">Assign who gave a gift to whom</p>
-                </div>
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <Loader2 className="h-10 w-10 animate-spin text-primary" />
+      </div>
+    )
+  }
 
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 relative">
-                    {participants.map((participant) => {
-                        const isGifter = selectedPair[0] === participant.id;
-                        const isGiftee = getGifteeForGifter(participant.id);
-                        const isGifterFor = getGifterForGiftee(participant.id);
-                        const isSelected = isGifter || selectedPair[1] === participant.id;
-
-                        return (
-                            <div
-                                key={participant.id}
-                                onClick={() => handleSelectParticipant(participant.id)}
-                                className={`
-                                    relative p-4 rounded-lg border-2 transition-all duration-300 cursor-pointer
-                                    hover:border-gold-400
-                                    ${isSelected ? 'border-gold-500 bg-gold-500/20' : 'border-gray-700'}
-                                `}
-                            >
-                                <div className="aspect-square relative rounded-full overflow-hidden mb-4">
-                                    <Image
-                                        src={participant.profilePic}
-                                        alt={participant.name}
-                                        className="object-cover"
-                                        fill
-                                    />
-                                </div>
-                                <h3 className="text-center font-semibold">{participant.name}</h3>
-                                {isGiftee && (
-                                    <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2">
-                                        <Gift className="w-6 h-6 text-gold-500" />
-                                    </div>
-                                )}
-                                {isGifterFor && (
-                                    <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                                        <Gift className="w-6 h-6 text-gold-500" />
-                                    </div>
-                                )}
-                            </div>
-                        );
-                    })}
-                </div>
-
-                {selectionMessage && (
-                    <div className="mt-4 p-4 bg-gold-500/20 border border-gold-500 rounded-lg text-gold-300 text-center">
-                        {selectionMessage}
-                    </div>
-                )}
-
-                <div className="mt-8 text-center space-x-4">
-                    <button
-                        className="px-6 py-3 bg-gradient-to-r from-gold-400 to-gold-600 text-black rounded-lg shadow-lg hover:from-gold-500 hover:to-gold-700 transition-colors duration-300 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
-                        onClick={handleSaveResults}
-                        disabled={isSubmitting || results.length === 0}
-                    >
-                        <Save className="w-4 h-4 inline-block mr-2" />
-                        {isSubmitting ? 'Saving...' : 'Save Results'}
-                    </button>
-                    <button
-                        className="px-6 py-3 bg-transparent border-2 border-gold-500 text-gold-500 rounded-lg shadow-lg hover:bg-gold-500/10 transition-colors duration-300 font-semibold"
-                        onClick={handleClearResults}
-                        disabled={results.length === 0}
-                    >
-                        <X className="w-4 h-4 inline-block mr-2" />
-                        Clear All
-                    </button>
-                </div>
-            </div>
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted px-4 py-12 text-foreground">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
+        <div className="text-center">
+          <h1 className="text-4xl font-semibold tracking-tight">Resultados oficiales</h1>
+          <p className="mt-2 text-muted-foreground">Asigna quién regaló a quién para calcular las puntuaciones.</p>
         </div>
-    );
-} 
+
+        <Card className="border-border/60 bg-card/85 backdrop-blur">
+          <CardHeader className="items-center space-y-3 text-center">
+            <span className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary">
+              <Gift className="h-8 w-8" />
+            </span>
+            <CardTitle className="text-2xl">Participantes</CardTitle>
+            <CardDescription>
+              Haz clic primero en quien regaló y después en la persona que recibió el regalo.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {errorMessage && (
+              <Alert variant="destructive">
+                <AlertTitle>Ocurrió un problema</AlertTitle>
+                <AlertDescription>{errorMessage}</AlertDescription>
+              </Alert>
+            )}
+
+            {selectionMessage && (
+              <Alert variant="info">
+                <AlertDescription>{selectionMessage}</AlertDescription>
+              </Alert>
+            )}
+
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {participants.map((participant) => {
+                const gifteeId = getGifteeForGifter(participant.id)
+                const gifterId = getGifterForGiftee(participant.id)
+                const isGifter = selectedPair[0] === participant.id
+                const isSelected = isGifter || selectedPair[1] === participant.id
+
+                return (
+                  <button
+                    key={participant.id}
+                    type="button"
+                    onClick={() => handleSelectParticipant(participant.id)}
+                    className={cn(
+                      'group relative flex flex-col items-center gap-3 rounded-xl border border-border/60 bg-card/60 p-5 text-center transition-all hover:border-primary/60 hover:bg-primary/5',
+                      isSelected && 'border-primary bg-primary/10 shadow-lg'
+                    )}
+                  >
+                    <div className="relative h-24 w-24 overflow-hidden rounded-full border border-border/60 bg-muted">
+                      <Image src={participant.profilePic} alt={participant.name} fill className="object-cover" />
+                    </div>
+                    <div className="space-y-2">
+                      <p className="text-base font-semibold">{participant.name}</p>
+                      <div className="flex flex-wrap items-center justify-center gap-2">
+                        {gifterId && (
+                          <Badge variant="secondary" className="gap-1">
+                            <Gift className="h-3.5 w-3.5" />
+                            Regaló
+                          </Badge>
+                        )}
+                        {gifteeId && (
+                          <Badge className="gap-1">
+                            <Gift className="h-3.5 w-3.5" />
+                            Recibió
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                  </button>
+                )
+              })}
+            </div>
+          </CardContent>
+        </Card>
+
+        <div className="flex flex-wrap items-center justify-center gap-3">
+          <Button onClick={handleSaveResults} disabled={isSubmitting || results.length === 0} className="min-w-[220px]">
+            {isSubmitting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Guardando...
+              </>
+            ) : (
+              <>
+                <Save className="mr-2 h-4 w-4" />
+                Guardar resultados
+              </>
+            )}
+          </Button>
+          <Button variant="outline" onClick={handleClearResults} disabled={results.length === 0} className="min-w-[220px]">
+            <X className="mr-2 h-4 w-4" />
+            Limpiar todo
+          </Button>
+        </div>
+      </div>
+    </div>
+  )
+}

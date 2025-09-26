@@ -5,11 +5,17 @@ declare global {
 }
 
 const prismaClientSingleton = () => {
+  const url = process.env.DATABASE_URL
+
+  if (!url) {
+    throw new Error('DATABASE_URL is not set. Please configure your PostgreSQL connection string.')
+  }
+
   return new PrismaClient({
     log: ['query', 'error', 'warn'],
     datasources: {
       db: {
-        url: process.env.POSTGRES_PRISMA_URL
+        url
       }
     }
   })

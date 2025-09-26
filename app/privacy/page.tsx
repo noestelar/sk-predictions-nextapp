@@ -1,90 +1,104 @@
-import React from 'react';
+import React from 'react'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle
+} from '@/components/ui/card'
 
 export default function PrivacyPolicy() {
+  const lastUpdated = new Date().toLocaleDateString()
+
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-3xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Privacy Policy</h1>
-        
-        <div className="space-y-6 text-gray-600">
-          <section>
-            <h2 className="text-xl font-semibold text-gray-800 mb-3">Introduction</h2>
-            <p>This privacy policy describes how SKToxqui Predictions (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;) collects, uses, and shares your information when you use our service at https://sk-predictions-nextapp.vercel.app (&quot;the Service&quot;). This policy applies to all users of our service.</p>
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted px-4 py-12 text-foreground">
+      <Card className="mx-auto max-w-4xl border-border/60 bg-card/90 backdrop-blur">
+        <CardHeader>
+          <CardTitle className="text-3xl">Política de privacidad</CardTitle>
+          <CardDescription>
+            Cómo SKToxqui Predictions recopila, protege y utiliza tu información dentro del juego de predicciones.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-8 text-sm leading-relaxed text-muted-foreground">
+          <section className="space-y-2">
+            <h2 className="text-lg font-semibold text-foreground">Introducción</h2>
+            <p>Esta política describe cómo SKToxqui Predictions (&quot;nosotros&quot;, &quot;nuestro&quot;) recopila, usa y comparte tu información cuando utilizas el servicio en https://sk-predictions-nextapp.vercel.app. Aplica para todas las personas que participan en la dinámica.</p>
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-gray-800 mb-3">Information We Collect</h2>
-            <p>We collect information that you provide directly to us when you:</p>
-            <ul className="list-disc pl-5 mt-2">
-              <li>Log in using your assigned name (limited to: Noé, Miriam, Martín, Iris, Ilse, Alex, Esteban Cesar, Brenda, Queso)</li>
-              <li>Make predictions and participate in our service</li>
-              <li>Contact us for support</li>
+            <h2 className="text-lg font-semibold text-foreground">Información que recopilamos</h2>
+            <p>Recibimos información que proporcionas directamente cuando:</p>
+            <ul className="mt-2 list-disc pl-6">
+              <li>Inicias sesión con tu nombre asignado (Noé, Miriam, Martín, Iris, Ilse, Alex, Esteban Cesar, Brenda, Queso)</li>
+              <li>Registras o actualizas tus predicciones</li>
+              <li>Te comunicas con nosotros para soporte</li>
             </ul>
-            <p className="mt-2">When you log in, we collect:</p>
-            <ul className="list-disc pl-5 mt-2">
-              <li>Your selected name from the pre-approved list</li>
-              <li>Basic usage data to provide our service</li>
-            </ul>
-          </section>
-
-          <section>
-            <h2 className="text-xl font-semibold text-gray-800 mb-3">How We Use Your Information</h2>
-            <p>We use the information we collect to:</p>
-            <ul className="list-disc pl-5 mt-2">
-              <li>Provide, maintain, and improve our services</li>
-              <li>Process and complete transactions</li>
-              <li>Authenticate you using your assigned name</li>
-              <li>Send you technical notices and support messages</li>
-              <li>Communicate with you about our services and updates</li>
+            <p className="mt-2">Al iniciar sesión registramos:</p>
+            <ul className="mt-2 list-disc pl-6">
+              <li>El nombre seleccionado de la lista preaprobada</li>
+              <li>Datos básicos de uso necesarios para operar el juego</li>
             </ul>
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-gray-800 mb-3">Information Sharing and Disclosure</h2>
-            <p>We do not sell or rent your personal information to third parties. We may share your information in the following circumstances:</p>
-            <ul className="list-disc pl-5 mt-2">
-              <li>With your explicit consent</li>
-              <li>To comply with legal obligations</li>
-              <li>To protect our rights and prevent fraud</li>
-              <li>With service providers who assist in our operations</li>
+            <h2 className="text-lg font-semibold text-foreground">Cómo usamos tu información</h2>
+            <p>Utilizamos la información recopilada para:</p>
+            <ul className="mt-2 list-disc pl-6">
+              <li>Operar, mantener y mejorar la dinámica</li>
+              <li>Autenticarte utilizando tu nombre asignado</li>
+              <li>Gestionar las predicciones y calcular los resultados</li>
+              <li>Enviar avisos técnicos o mensajes de soporte relacionados con el juego</li>
             </ul>
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-gray-800 mb-3">Data Storage and Security</h2>
-            <p>We implement appropriate technical and organizational measures to protect your personal information. Your data is stored securely on our servers and we use industry-standard encryption to protect data transmission.</p>
-          </section>
-
-          <section>
-            <h2 className="text-xl font-semibold text-gray-800 mb-3">Your Rights and Choices</h2>
-            <p>You have the right to:</p>
-            <ul className="list-disc pl-5 mt-2">
-              <li>Access your personal information</li>
-              <li>Request deletion of your data</li>
-              <li>Object to our use of your data</li>
-              <li>Opt-out of marketing communications</li>
+            <h2 className="text-lg font-semibold text-foreground">Compartir y divulgar información</h2>
+            <p>No vendemos ni rentamos tu información personal. Solo la compartimos cuando:</p>
+            <ul className="mt-2 list-disc pl-6">
+              <li>Contamos con tu consentimiento explícito</li>
+              <li>Debemos cumplir con obligaciones legales</li>
+              <li>Necesitamos proteger nuestros derechos y prevenir fraude</li>
+              <li>Trabajamos con proveedores que nos ayudan a operar el servicio</li>
             </ul>
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-gray-800 mb-3">Data Retention</h2>
-            <p>We retain your information for as long as necessary to provide our services and comply with our legal obligations. You can request deletion of your account and associated data at any time.</p>
+            <h2 className="text-lg font-semibold text-foreground">Almacenamiento y seguridad</h2>
+            <p>Aplicamos medidas técnicas y organizacionales para proteger tu información personal. Los datos se almacenan de forma segura y utilizamos cifrado estándar para proteger la transmisión.</p>
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-gray-800 mb-3">Contact Us</h2>
-            <p>If you have any questions about this Privacy Policy or our data practices, please contact us at:</p>
-            <p className="mt-2">Email: sktoxqui@gmail.com</p>
-            <p>Website: https://sk-predictions-nextapp.vercel.app</p>
+            <h2 className="text-lg font-semibold text-foreground">Tus derechos y opciones</h2>
+            <p>Puedes solicitarnos en cualquier momento:</p>
+            <ul className="mt-2 list-disc pl-6">
+              <li>Acceder a tu información personal</li>
+              <li>Eliminar los datos almacenados</li>
+              <li>Oponerte al uso de tu información</li>
+              <li>Dejar de recibir comunicaciones sobre el juego</li>
+            </ul>
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-gray-800 mb-3">Changes to This Policy</h2>
-            <p>We may update this privacy policy from time to time. We will notify you of any material changes by posting the new privacy policy on this page and updating the &quot;Last Updated&quot; date.</p>
-            <p className="mt-2">Last updated: {new Date().toLocaleDateString()}</p>
+            <h2 className="text-lg font-semibold text-foreground">Conservación de datos</h2>
+            <p>Mantenemos tu información únicamente durante el tiempo necesario para operar el juego festivo y cumplir con obligaciones legales. Puedes solicitar su eliminación cuando lo desees.</p>
+          </section>
+
+          <section>
+            <h2 className="text-lg font-semibold text-foreground">Contacto</h2>
+            <p>Si tienes dudas sobre esta política o cómo manejamos los datos, escríbenos:</p>
+            <ul className="mt-2 space-y-1">
+              <li>Correo: sktoxqui@gmail.com</li>
+              <li>Sitio: https://sk-predictions-nextapp.vercel.app</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2 className="text-lg font-semibold text-foreground">Cambios a esta política</h2>
+            <p>Podemos actualizar este documento ocasionalmente. Publicaremos cualquier cambio importante en esta página y actualizaremos la fecha de revisión.</p>
+            <p className="mt-2 font-medium text-foreground">Última actualización: {lastUpdated}</p>
           </section>
         </div>
-      </div>
+      </Card>
     </div>
-  );
-} 
+  )
+}

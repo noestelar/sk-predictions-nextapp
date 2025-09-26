@@ -1,36 +1,79 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SKToxqui Predictions
+
+A Secret Santa predictions web application where participants can guess who will give gifts to whom during the Secret Santa exchange. Built with Next.js, the app features user authentication, prediction submission, results tracking, and winner leaderboards.
+
+## Features
+
+- **User Authentication**: Simple name-based login for predefined participants
+- **Predictions**: Users can predict gifter-giftee pairs for the Secret Santa exchange
+- **Admin Panel**: Set cutoff dates for predictions and record actual gift exchange results
+- **Winners Page**: View leaderboard showing participants' prediction accuracy scores
+- **Real-time Updates**: Dynamic content with automatic revalidation
+- **Responsive Design**: Modern UI built with Tailwind CSS and shadcn/ui components
+
+## Tech Stack
+
+- **Framework**: Next.js 15 with React 19 and App Router
+- **Database**: PostgreSQL with Prisma ORM
+- **Caching**: Optional Redis layer for predictions and leaderboard freshness
+- **Authentication**: NextAuth.js with custom credentials provider
+- **UI**: shadcn/ui components with Tailwind CSS
+- **Icons**: Lucide React
 
 ## Getting Started
 
-First, run the development server:
+This application runs on PostgreSQL, giving us relational guarantees and transactional safety for predictions, with Redis available to cache real-time views like the leaderboard.
+
+### 1. Configure environment
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cp .env.example .env.local
+cp .env.example .env
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Update the newly created `.env.local` (and `.env` for Docker Compose) with the secrets for NextAuth if you plan to use external providers.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 2. Install dependencies
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+pnpm install
+```
 
-## Learn More
+If you prefer containers, you can spin up PostgreSQL and Redis locally with:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+docker compose up -d
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The compose file exposes Postgres on `localhost:5432` and Redis on `localhost:6379`, matching the defaults in `.env.example`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 3. Sync and seed the database
 
-## Deploy on Vercel
+Point `DATABASE_URL` at a running PostgreSQL instance (for example: `postgresql://postgres:postgres@localhost:5432/sk_predictions`). Then push the schema and seed:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+pnpm dlx prisma db push
+pnpm dlx prisma db seed
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Alternatively, you can execute `init.sql` against your database to create and seed everything manually:
+
+```bash
+psql "$DATABASE_URL" -f init.sql
+```
+
+### 4. Run the development server
+
+```bash
+pnpm dev
+```
+
+By default the app is available at [http://localhost:3000](http://localhost:3000).
+
+## Tooling
+
+- [Next.js](https://nextjs.org) App Router with React 19
+- [Prisma](https://www.prisma.io/docs) with a PostgreSQL datasource and Redis-backed caching helpers
+- [shadcn/ui](https://ui.shadcn.com) components powered by Tailwind CSS (see `components/ui`)
+
+Use `pnpm build` to verify the production bundle. This script runs `prisma db push` automatically so the PostgreSQL schema is aligned before packaging the app. If you enable Redis, set `REDIS_URL` so the caching helpers can connect.
