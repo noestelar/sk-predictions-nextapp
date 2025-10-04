@@ -97,7 +97,7 @@ export default function PrivacyPolicy() {
             <p>Podemos actualizar este documento ocasionalmente. Publicaremos cualquier cambio importante en esta página y actualizaremos la fecha de revisión.</p>
             <p className="mt-2 font-medium text-foreground">Última actualización: {lastUpdated}</p>
           </section>
-        </div>
+        </CardContent>
       </Card>
     </div>
   )
