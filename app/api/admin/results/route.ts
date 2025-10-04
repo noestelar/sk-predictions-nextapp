@@ -3,7 +3,7 @@ import prisma from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
 
 import { redis } from '@/lib/redis';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { authOptions } from '@/lib/auth';
 
 const LEADERBOARD_CACHE_KEY = 'leaderboard:latest';
 
