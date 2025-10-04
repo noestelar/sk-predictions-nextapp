@@ -1,12 +1,13 @@
 'use client';
 
 import { SessionProvider } from 'next-auth/react';
-import { Geist, Geist_Mono } from "next/font/google";
+import { Cinzel_Decorative, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans", 
+const cinzelDecorative = Cinzel_Decorative({
+  variable: "--font-cinzel-decorative",
   subsets: ["latin"],
+  weight: ["400", "700", "900"],
 });
 
 const geistMono = Geist_Mono({
@@ -20,9 +21,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${cinzelDecorative.variable} ${geistMono.variable} antialiased`}
       >
         <SessionProvider>{children}</SessionProvider>
       </body>
