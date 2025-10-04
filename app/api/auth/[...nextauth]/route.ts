@@ -17,7 +17,7 @@ declare module 'next-auth' {
     }
 }
 
-export const authOptions: AuthOptions = {
+const authOptions: AuthOptions = {
     debug: false,
     adapter: PrismaAdapter(prisma),
     providers: [

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 import { Calendar, Clock, MapPin, Sparkles, Loader2, Star, PartyPopper, UtensilsCrossed, Gift, Zap } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -191,9 +192,11 @@ export default function HomePage() {
                 <Card className="group overflow-hidden border-amber-500/30 bg-zinc-800/50 backdrop-blur-sm transition-all hover:scale-[1.02] hover:border-amber-500/60 hover:shadow-lg hover:shadow-amber-500/20 min-h-[320px]">
                   <CardContent className="p-6 h-full flex flex-col">
                     <div className="mb-4 flex items-center justify-center rounded-lg bg-gradient-to-br from-amber-500/20 to-amber-600/10 overflow-hidden" style={{ height: '160px' }}>
-                      <img 
+                      <Image 
                         src="/images/estebanpiso.png" 
                         alt="Piñata activity" 
+                        width={160}
+                        height={160}
                         className="h-full w-full object-cover transition-transform group-hover:scale-110"
                         style={{ height: '100%' }}
                       />
@@ -209,9 +212,11 @@ export default function HomePage() {
                 <Card className="group overflow-hidden border-amber-500/30 bg-zinc-800/50 backdrop-blur-sm transition-all hover:scale-[1.02] hover:border-amber-500/60 hover:shadow-lg hover:shadow-amber-500/20 min-h-[320px]">
                   <CardContent className="p-6 h-full flex flex-col">
                     <div className="mb-4 flex items-center justify-center rounded-lg bg-gradient-to-br from-amber-500/20 to-amber-600/10 overflow-hidden" style={{ height: '160px' }}>
-                      <img 
+                      <Image 
                         src="/images/comida.png" 
                         alt="Comida activity" 
+                        width={160}
+                        height={160}
                         className="h-full w-full object-cover transition-transform group-hover:scale-110"
                         style={{ height: '100%' }}
                       />
@@ -227,9 +232,11 @@ export default function HomePage() {
                 <Card className="group overflow-hidden border-amber-500/30 bg-zinc-800/50 backdrop-blur-sm transition-all hover:scale-[1.02] hover:border-amber-500/60 hover:shadow-lg hover:shadow-amber-500/20 min-h-[320px]">
                   <CardContent className="p-6 h-full flex flex-col">
                     <div className="mb-4 flex items-center justify-center rounded-lg bg-gradient-to-br from-amber-500/20 to-amber-600/10 overflow-hidden" style={{ height: '160px' }}>
-                      <img 
+                      <Image 
                         src="/images/regalos.png" 
                         alt="Regalos activity" 
+                        width={160}
+                        height={160}
                         className="h-full w-full object-cover transition-transform group-hover:scale-110"
                         style={{ height: '100%' }}
                       />
@@ -245,9 +252,11 @@ export default function HomePage() {
                 <Card className="group overflow-hidden border-amber-500/30 bg-zinc-800/50 backdrop-blur-sm transition-all hover:scale-[1.02] hover:border-amber-500/60 hover:shadow-lg hover:shadow-amber-500/20 min-h-[320px]">
                   <CardContent className="p-6 h-full flex flex-col">
                     <div className="mb-4 flex items-center justify-center rounded-lg bg-gradient-to-br from-amber-500/20 to-amber-600/10 overflow-hidden" style={{ height: '160px' }}>
-                      <img 
+                      <Image 
                         src="/images/locura.jpeg" 
                         alt="Locura activity" 
+                        width={160}
+                        height={160}
                         className="h-full w-full object-cover transition-transform group-hover:scale-110"
                         style={{ height: '100%' }}
                       />
