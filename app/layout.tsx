@@ -2,6 +2,7 @@
 
 import { SessionProvider } from 'next-auth/react';
 import { Cinzel_Decorative, Geist_Mono } from "next/font/google";
+import Header from '@/components/header';
 import "./globals.css";
 
 const cinzelDecorative = Cinzel_Decorative({
@@ -25,7 +26,10 @@ export default function RootLayout({
       <body
         className={`${cinzelDecorative.variable} ${geistMono.variable} antialiased`}
       >
-        <SessionProvider>{children}</SessionProvider>
+        <SessionProvider>
+          <Header />
+          {children}
+        </SessionProvider>
       </body>
     </html>
   );

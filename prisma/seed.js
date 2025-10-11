@@ -5,15 +5,16 @@ const prisma = new PrismaClient();
 async function main() {
     // Create participants
     const participants = [
-        { name: 'Noé', profilePic: '/avatars/noe.jpg' },
-        { name: 'Miriam', profilePic: '/avatars/miriam.jpg' },
-        { name: 'Martín', profilePic: '/avatars/martin.jpg' },
-        { name: 'Iris', profilePic: '/avatars/iris.jpg' },
-        { name: 'Ilse', profilePic: '/avatars/ilse.jpg' },
-        { name: 'Alex', profilePic: '/avatars/alex.jpg' },
-        { name: 'Esteban Cesar', profilePic: '/avatars/esteban.jpg' },
-        { name: 'Brenda', profilePic: '/avatars/brenda.jpg' },
-        { name: 'Queso', profilePic: '/avatars/queso.jpg' },
+        { name: 'Noé', profilePic: '/images/noe.jpg' },
+        { name: 'Miriam', profilePic: '/images/miriam.jpg' },
+        { name: 'Martín', profilePic: '/images/martin.jpg' },
+        { name: 'Iris', profilePic: '/images/iris.jpg' },
+        { name: 'Ilse', profilePic: '/images/ilse.jpg' },
+        { name: 'Alex', profilePic: '/images/alex.jpg' },
+        { name: 'Esteban', profilePic: '/images/esteban.jpg' },
+        { name: 'Brenda', profilePic: '/images/brenda.jpg' },
+        { name: 'Queso', profilePic: '/images/queso.jpg' },
+        { name: 'César', profilePic: '/images/cesar.jpg' },
     ];
 
     for (const participant of participants) {

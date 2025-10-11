@@ -11,7 +11,7 @@ import { Card, CardContent } from '@/components/ui/card'
 export default function HomePage() {
   const { status } = useSession()
   const router = useRouter()
-  const [showPredictionsButton] = useState(false) // Hidden for now
+  const [showPredictionsButton] = useState(true) // Hidden for now
 
   if (status === 'loading') {
     return (
@@ -45,12 +45,12 @@ export default function HomePage() {
 
       {/* Floating sparkles decoration with subtle shimmer */}
       <div className="absolute inset-0 -z-10 overflow-hidden">
-        <Star className="absolute top-20 left-[10%] h-4 w-4 text-amber-400/30 animate-pulse" />
-        <Star className="absolute top-40 right-[15%] h-3 w-3 text-amber-400/40 animate-pulse delay-500" />
-        <Star className="absolute bottom-32 left-[20%] h-3 w-3 text-amber-400/30 animate-pulse delay-1000" />
-        <Star className="absolute top-60 right-[25%] h-4 w-4 text-amber-400/20 animate-pulse delay-700" />
-        <Sparkles className="absolute bottom-20 right-[30%] h-5 w-5 text-amber-400/25 animate-pulse delay-300" />
-        <Sparkles className="absolute top-1/3 left-[5%] h-4 w-4 text-amber-400/30 animate-pulse delay-1200" />
+        <Star className="absolute top-20 left-[10%] h-4 w-4 text-amber-400/70 animate-pulse" />
+        <Star className="absolute top-40 right-[15%] h-3 w-3 text-amber-400/80 animate-pulse delay-500" />
+        <Star className="absolute bottom-32 left-[20%] h-3 w-3 text-amber-400/70 animate-pulse delay-1000" />
+        <Star className="absolute top-60 right-[25%] h-4 w-4 text-amber-400/60 animate-pulse delay-700" />
+        <Sparkles className="absolute bottom-20 right-[30%] h-5 w-5 text-amber-400/75 animate-pulse delay-300" />
+        <Sparkles className="absolute top-1/3 left-[5%] h-4 w-4 text-amber-400/70 animate-pulse delay-1200" />
 
         {/* Subtle shimmer effects */}
         <div className="absolute top-10 left-[30%] h-2 w-2 rounded-full bg-amber-300/40 animate-ping" style={{animationDuration: '3s'}} />
@@ -62,24 +62,24 @@ export default function HomePage() {
 
       <div className="mx-auto max-w-3xl">
         {/* Header with animated stars */}
-        <div className="mb-12 text-center">
+        <div className="mb-12 text-center animate-[fadeInDown_0.8s_ease-out]">
           <div className="mb-6 flex items-center justify-center gap-4">
-            <Sparkles className="h-10 w-10 animate-pulse text-amber-400" />
-            <h1 className="bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 bg-clip-text text-4xl font-black tracking-tight text-transparent md:text-6xl">
+            <Sparkles className="h-10 w-10 animate-[bounce_2s_ease-in-out_infinite] text-amber-400" />
+            <h1 className="bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 bg-clip-text text-4xl font-black tracking-tight text-transparent md:text-6xl animate-[scaleIn_0.8s_ease-out]">
               VELADA SKTOXQUI
             </h1>
-            <Sparkles className="h-10 w-10 animate-pulse text-amber-400" />
+            <Sparkles className="h-10 w-10 animate-[bounce_2s_ease-in-out_infinite_0.5s] text-amber-400" />
           </div>
-          <div className="inline-block rounded-full border-2 border-amber-500/50 bg-amber-500/10 px-6 py-2 backdrop-blur-sm">
+          <div className="inline-block rounded-full border-2 border-amber-500/50 bg-amber-500/10 px-6 py-2 backdrop-blur-sm animate-[fadeIn_1s_ease-out_0.5s_both]">
             <span className="text-2xl font-bold text-amber-300">2025</span>
           </div>
         </div>
 
         {/* Main content card with enhanced styling */}
-        <div className="rounded-2xl border border-amber-500/30 bg-zinc-900/80 p-8 shadow-2xl backdrop-blur-md md:p-10">
+        <div className="rounded-2xl border border-amber-500/30 bg-zinc-900/80 p-8 shadow-2xl backdrop-blur-md md:p-10 animate-[slideUp_0.8s_ease-out_0.3s_both]">
           <div className="space-y-8 text-zinc-200">
             {/* Introduction with enhanced typography */}
-            <div className="space-y-4">
+            <div className="space-y-4 animate-[fadeIn_0.8s_ease-out_0.6s_both]">
               <p className="text-lg leading-relaxed text-amber-100/90">
                 Estimados invitados,
               </p>
@@ -87,9 +87,8 @@ export default function HomePage() {
               <p className="text-base leading-relaxed">
                 Nos complace extenderles una cordial invitación a la{' '}
                 <span className="font-bold text-amber-400">Velada SKToxqui 2025</span>,
-                un evento exclusivo que promete ser inolvidable. Empezando por, nuestra tradicional{' '}
-                <span className="font-bold text-amber-400">Wishlist</span>, están cordialmente
-                invitados a la planeación, donde elegiremos el día del evento, la comida y
+                un evento exclusivo que promete ser inolvidable. Empezando por, nuestra tradicional
+                Wishlist, están cordialmente invitados a la planeación, donde elegiremos el día del evento, la comida y
                 haremos el llenado de la wishlist. 
                 Que será llevada a cabo en{' '}
                 <span className="text-lg font-medium">
@@ -104,23 +103,43 @@ export default function HomePage() {
                   </a>
                 </span>
               </p>
+              
+              {/* Wishlist Button */}
+              <div className="pt-2 animate-[slideRight_0.6s_ease-out_0.8s_both]">
+                <Button
+                  className="group relative w-full overflow-hidden bg-gradient-to-r from-purple-600 to-pink-600 py-4 text-base font-bold text-white shadow-lg transition-all duration-300 hover:scale-[1.05] hover:shadow-purple-500/50 hover:shadow-2xl active:scale-[0.98]"
+                  asChild
+                >
+                  <a 
+                    href="https://www.notion.so/noerl/Wishlist-Reuni-n-28276c7ee2d9808fa902f6b3a6e5f398?source=copy_link"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <span className="relative z-10 inline-flex items-center gap-2">
+                      <span className="animate-[wiggle_1s_ease-in-out_infinite]">✨</span>
+                      VER WISHLIST EN NOTION
+                    </span>
+                    <div className="absolute inset-0 -z-0 bg-gradient-to-r from-pink-600 to-purple-600 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                  </a>
+                </Button>
+              </div>
             </div>
 
             {/* Event details box with enhanced design */}
-            <div className="rounded-xl border-2 border-amber-500/50 bg-gradient-to-br from-amber-950/40 to-zinc-900/60 p-6 shadow-xl backdrop-blur-sm">
+            <div className="rounded-xl border-2 border-amber-500/50 bg-gradient-to-br from-amber-950/40 to-zinc-900/60 p-6 shadow-xl backdrop-blur-sm animate-[fadeIn_0.8s_ease-out_0.9s_both]">
               <div className="space-y-5">
-                <div className="flex items-start gap-4 transition-all hover:translate-x-1">
-                  <div className="rounded-lg bg-amber-500/20 p-2">
+                <div className="flex items-start gap-4 transition-all duration-300 hover:translate-x-2 hover:scale-105 animate-[slideLeft_0.5s_ease-out_1s_both]">
+                  <div className="rounded-lg bg-amber-500/20 p-2 transition-all duration-300 group-hover:rotate-12">
                     <Calendar className="h-6 w-6 text-amber-400" />
                   </div>
                   <div>
                     <span className="block text-sm font-semibold uppercase tracking-wide text-amber-400">Fecha</span>
-                    <span className="text-lg font-medium">Por definir</span>
+                    <span className="text-lg font-medium">22 de Diciembre, 2025</span>
                   </div>
                 </div>
 
-                <div className="flex items-start gap-4 transition-all hover:translate-x-1">
-                  <div className="rounded-lg bg-amber-500/20 p-2">
+                <div className="flex items-start gap-4 transition-all duration-300 hover:translate-x-2 hover:scale-105 animate-[slideLeft_0.5s_ease-out_1.1s_both]">
+                  <div className="rounded-lg bg-amber-500/20 p-2 transition-all duration-300 group-hover:rotate-12">
                     <Clock className="h-6 w-6 text-amber-400" />
                   </div>
                   <div>
@@ -129,8 +148,8 @@ export default function HomePage() {
                   </div>
                 </div>
 
-                <div className="flex items-start gap-4 transition-all hover:translate-x-1">
-                  <div className="rounded-lg bg-amber-500/20 p-2">
+                <div className="flex items-start gap-4 transition-all duration-300 hover:translate-x-2 hover:scale-105 animate-[slideLeft_0.5s_ease-out_1.2s_both]">
+                  <div className="rounded-lg bg-amber-500/20 p-2 transition-all duration-300 group-hover:rotate-12">
                     <MapPin className="h-6 w-6 text-amber-400" />
                   </div>
                   <div>
@@ -142,54 +161,90 @@ export default function HomePage() {
             </div>
 
             {/* Calendar buttons with enhanced styling */}
-            {/* <div className="space-y-4">
+            <div className="space-y-4 animate-[fadeIn_0.8s_ease-out_1.3s_both]">
               <p className="text-center text-sm text-zinc-300">
-                Para asegurar su asistencia, hemos preparado un archivo para que agreguen este
-                distinguido evento a sus calendarios:
+                Para asegurar su asistencia, agreguen este distinguido evento a sus calendarios:
               </p>
 
               <div className="space-y-3">
                 <Button
-                  className="group relative w-full overflow-hidden bg-gradient-to-r from-amber-600 to-amber-500 py-6 text-base font-bold text-zinc-950 shadow-lg transition-all hover:scale-[1.02] hover:shadow-amber-500/50"
+                  className="group relative w-full overflow-hidden bg-gradient-to-r from-amber-600 to-amber-500 py-6 text-base font-bold text-zinc-950 shadow-lg transition-all duration-300 hover:scale-[1.05] hover:shadow-amber-500/50 hover:shadow-2xl active:scale-[0.98] animate-[slideRight_0.5s_ease-out_1.4s_both]"
                   asChild
                 >
-                  <a href="#">
+                  <a 
+                    href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Velada+SKToxqui+2025&dates=20251222T180000Z/20251222T230000Z&details=Un+evento+exclusivo+que+promete+ser+inolvidable.+Piñata,+comida,+regalos+y+mucha+diversión!&location=Por+definir"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     <span className="relative z-10">📅 AGREGAR A GOOGLE CALENDAR</span>
-                    <div className="absolute inset-0 -z-0 bg-gradient-to-r from-amber-500 to-amber-400 opacity-0 transition-opacity group-hover:opacity-100" />
+                    <div className="absolute inset-0 -z-0 bg-gradient-to-r from-amber-500 to-amber-400 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                   </a>
                 </Button>
 
                 <Button
-                  className="group relative w-full overflow-hidden bg-gradient-to-r from-amber-600 to-amber-500 py-6 text-base font-bold text-zinc-950 shadow-lg transition-all hover:scale-[1.02] hover:shadow-amber-500/50"
+                  className="group relative w-full overflow-hidden bg-gradient-to-r from-amber-600 to-amber-500 py-6 text-base font-bold text-zinc-950 shadow-lg transition-all duration-300 hover:scale-[1.05] hover:shadow-amber-500/50 hover:shadow-2xl active:scale-[0.98] animate-[slideRight_0.5s_ease-out_1.5s_both]"
                   asChild
                 >
-                  <a href="#">
+                  <a 
+                    href="https://outlook.live.com/calendar/0/deeplink/compose?path=/calendar/action/compose&rru=addevent&subject=Velada+SKToxqui+2025&startdt=2025-12-22T18:00:00Z&enddt=2025-12-22T23:00:00Z&body=Un+evento+exclusivo+que+promete+ser+inolvidable.+Piñata,+comida,+regalos+y+mucha+diversión!&location=Por+definir"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     <span className="relative z-10">📅 AGREGAR A OUTLOOK</span>
-                    <div className="absolute inset-0 -z-0 bg-gradient-to-r from-amber-500 to-amber-400 opacity-0 transition-opacity group-hover:opacity-100" />
+                    <div className="absolute inset-0 -z-0 bg-gradient-to-r from-amber-500 to-amber-400 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                   </a>
                 </Button>
 
                 <Button
-                  className="group relative w-full overflow-hidden bg-gradient-to-r from-amber-600 to-amber-500 py-6 text-base font-bold text-zinc-950 shadow-lg transition-all hover:scale-[1.02] hover:shadow-amber-500/50"
+                  className="group relative w-full overflow-hidden bg-gradient-to-r from-amber-600 to-amber-500 py-6 text-base font-bold text-zinc-950 shadow-lg transition-all duration-300 hover:scale-[1.05] hover:shadow-amber-500/50 hover:shadow-2xl active:scale-[0.98] animate-[slideRight_0.5s_ease-out_1.6s_both]"
                   asChild
                 >
-                  <a href="#">
-                    <span className="relative z-10">📅 AGREGAR A OTRO CALENDARIO</span>
-                    <div className="absolute inset-0 -z-0 bg-gradient-to-r from-amber-500 to-amber-400 opacity-0 transition-opacity group-hover:opacity-100" />
+                  <a 
+                    href="data:text/calendar;charset=utf-8,BEGIN:VCALENDAR%0AVERSION:2.0%0APRODID:-//Velada SKToxqui//ES%0ABEGIN:VEVENT%0ADTSTART:20251222T180000Z%0ADTEND:20251222T230000Z%0ASUMMARY:Velada SKToxqui 2025%0ADESCRIPTION:Un evento exclusivo que promete ser inolvidable. Piñata, comida, regalos y mucha diversión!%0ALOCATION:Por definir%0ASTATUS:CONFIRMED%0ASEQUENCE:0%0AEND:VEVENT%0AEND:VCALENDAR"
+                    download="velada-sktoxqui-2025.ics"
+                  >
+                    <span className="relative z-10">📅 DESCARGAR ARCHIVO ICS (Apple Calendar)</span>
+                    <div className="absolute inset-0 -z-0 bg-gradient-to-r from-amber-500 to-amber-400 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                   </a>
                 </Button>
               </div>
-            </div> */}
+            </div>
+
+            {/* DrawNames Section */}
+            <div className="space-y-4 animate-[fadeIn_0.8s_ease-out_1.7s_both]">
+              <h2 className="text-center text-2xl font-bold text-amber-400 animate-[slideUp_0.6s_ease-out_1.8s_both]">
+                <Gift className="mb-1 inline h-6 w-6 text-amber-400 animate-[wiggle_1s_ease-in-out_infinite]" /> Intercambio de Regalos
+              </h2>
+              <p className="text-center text-base leading-relaxed">
+                ¡Participa en nuestro intercambio de regalos! Haz clic en el botón para unirte al evento:
+              </p>
+              <Button
+                className="group relative w-full overflow-hidden bg-gradient-to-r from-red-600 to-green-600 py-6 text-base font-bold text-white shadow-lg transition-all duration-300 hover:scale-[1.05] hover:shadow-green-500/50 hover:shadow-2xl active:scale-[0.98] animate-[slideUp_0.6s_ease-out_1.9s_both]"
+                asChild
+              >
+                <a 
+                  href="https://www.drawnames.com.mx/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <span className="relative z-10 inline-flex items-center gap-2">
+                    <span className="animate-[bounce_2s_ease-in-out_infinite]">🎁</span>
+                    UNIRSE AL INTERCAMBIO EN DRAWNAMES
+                  </span>
+                  <div className="absolute inset-0 -z-0 bg-gradient-to-r from-green-600 to-red-600 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                </a>
+              </Button>
+            </div>
 
             {/* What to expect section */}
-            <div className="space-y-6">
-              <h2 className="text-center text-2xl font-bold text-amber-400">
+            <div className="space-y-6 animate-[fadeIn_0.8s_ease-out_2s_both]">
+              <h2 className="text-center text-2xl font-bold text-amber-400 animate-[slideUp_0.6s_ease-out_2.1s_both]">
                 ¿Qué te espera en la Velada?
               </h2>
 
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 {/* Piñata Card */}
-                <Card className="group overflow-hidden border-amber-500/30 bg-zinc-800/50 backdrop-blur-sm transition-all hover:scale-[1.02] hover:border-amber-500/60 hover:shadow-lg hover:shadow-amber-500/20 min-h-[320px]">
+                <Card className="group overflow-hidden border-amber-500/30 bg-zinc-800/50 backdrop-blur-sm transition-all duration-300 hover:scale-[1.05] hover:border-amber-500/60 hover:shadow-lg hover:shadow-amber-500/30 hover:-translate-y-2 min-h-[320px] animate-[fadeInUp_0.6s_ease-out_2.2s_both]">
                   <CardContent className="p-6 h-full flex flex-col">
                     <div className="mb-4 flex items-center justify-center rounded-lg bg-gradient-to-br from-amber-500/20 to-amber-600/10 overflow-hidden" style={{ height: '160px' }}>
                       <Image 
@@ -209,7 +264,7 @@ export default function HomePage() {
                 </Card>
 
                 {/* Comida Card */}
-                <Card className="group overflow-hidden border-amber-500/30 bg-zinc-800/50 backdrop-blur-sm transition-all hover:scale-[1.02] hover:border-amber-500/60 hover:shadow-lg hover:shadow-amber-500/20 min-h-[320px]">
+                <Card className="group overflow-hidden border-amber-500/30 bg-zinc-800/50 backdrop-blur-sm transition-all duration-300 hover:scale-[1.05] hover:border-amber-500/60 hover:shadow-lg hover:shadow-amber-500/30 hover:-translate-y-2 min-h-[320px] animate-[fadeInUp_0.6s_ease-out_2.3s_both]">
                   <CardContent className="p-6 h-full flex flex-col">
                     <div className="mb-4 flex items-center justify-center rounded-lg bg-gradient-to-br from-amber-500/20 to-amber-600/10 overflow-hidden" style={{ height: '160px' }}>
                       <Image 
@@ -229,7 +284,7 @@ export default function HomePage() {
                 </Card>
 
                 {/* Regalos Card */}
-                <Card className="group overflow-hidden border-amber-500/30 bg-zinc-800/50 backdrop-blur-sm transition-all hover:scale-[1.02] hover:border-amber-500/60 hover:shadow-lg hover:shadow-amber-500/20 min-h-[320px]">
+                <Card className="group overflow-hidden border-amber-500/30 bg-zinc-800/50 backdrop-blur-sm transition-all duration-300 hover:scale-[1.05] hover:border-amber-500/60 hover:shadow-lg hover:shadow-amber-500/30 hover:-translate-y-2 min-h-[320px] animate-[fadeInUp_0.6s_ease-out_2.4s_both]">
                   <CardContent className="p-6 h-full flex flex-col">
                     <div className="mb-4 flex items-center justify-center rounded-lg bg-gradient-to-br from-amber-500/20 to-amber-600/10 overflow-hidden" style={{ height: '160px' }}>
                       <Image 
@@ -249,7 +304,7 @@ export default function HomePage() {
                 </Card>
 
                 {/* Locura Card */}
-                <Card className="group overflow-hidden border-amber-500/30 bg-zinc-800/50 backdrop-blur-sm transition-all hover:scale-[1.02] hover:border-amber-500/60 hover:shadow-lg hover:shadow-amber-500/20 min-h-[320px]">
+                <Card className="group overflow-hidden border-amber-500/30 bg-zinc-800/50 backdrop-blur-sm transition-all duration-300 hover:scale-[1.05] hover:border-amber-500/60 hover:shadow-lg hover:shadow-amber-500/30 hover:-translate-y-2 min-h-[320px] animate-[fadeInUp_0.6s_ease-out_2.5s_both]">
                   <CardContent className="p-6 h-full flex flex-col">
                     <div className="mb-4 flex items-center justify-center rounded-lg bg-gradient-to-br from-amber-500/20 to-amber-600/10 overflow-hidden" style={{ height: '160px' }}>
                       <Image 
@@ -271,18 +326,18 @@ export default function HomePage() {
             </div>
 
             {/* Closing message with enhanced styling */}
-            <div className="space-y-6 pt-4">
-              <p className="text-base leading-relaxed text-center">
+            <div className="space-y-6 pt-4 animate-[fadeIn_0.8s_ease-out_2.6s_both]">
+              <p className="text-base leading-relaxed text-center animate-[slideUp_0.6s_ease-out_2.7s_both]">
                 Manténganse atentos, pues pronto revelaremos más detalles sobre el emocionante
                 sorteo y las sofisticadas predicciones que hemos preparado para ustedes.
               </p>
 
-              <div className="rounded-lg border border-amber-500/30 bg-amber-500/5 p-6 text-center backdrop-blur-sm">
+              <div className="rounded-lg border border-amber-500/30 bg-amber-500/5 p-6 text-center backdrop-blur-sm animate-[pulse_3s_ease-in-out_infinite] hover:scale-105 transition-transform duration-300">
                 <p className="text-base font-medium italic leading-relaxed text-amber-300">
-                  <Sparkles className="mb-1 inline h-5 w-5 animate-pulse" />
+                  <Sparkles className="mb-1 inline h-5 w-5 animate-[wiggle_1s_ease-in-out_infinite] text-amber-400" />
                   {' '}Prepárense para una velada de elegancia y distinción en la PARTIDA DE MADRE
                   ANUAL, Digo... La Velada SKToxqui 2025{' '}
-                  <Sparkles className="mb-1 inline h-5 w-5 animate-pulse" />
+                  <Sparkles className="mb-1 inline h-5 w-5 animate-[wiggle_1s_ease-in-out_infinite_0.5s] text-amber-400" />
                 </p>
               </div>
             </div>

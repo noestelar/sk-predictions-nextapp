@@ -172,39 +172,36 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
+      <div className="flex min-h-screen items-center justify-center bg-black">
         <Loader2 className="h-10 w-10 animate-spin text-primary" />
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted px-4 py-12 text-foreground">
+    <div className="min-h-screen bg-black px-4 py-12">
       <div className="mx-auto flex w-full max-w-5xl flex-col gap-6">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-semibold tracking-tight">Predicciones SKToxqui</h1>
-            <p className="mt-1 text-sm text-muted-foreground">
+            <h1 className="text-3xl font-bold tracking-tight text-primary font-cinzel">Predicciones SKToxqui</h1>
+            <p className="mt-1 text-sm text-primary/70">
               {isPastCutoff ? 'Las predicciones están cerradas.' : 'Selecciona tus parejas antes del tiempo límite.'}
             </p>
             {cutoffTime && (
-              <div className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
+              <div className="mt-2 flex items-center gap-2 text-sm text-primary/90 bg-primary/10 rounded-lg px-3 py-2 border border-primary/20">
                 <Clock className="h-4 w-4" />
-                <span>{timeLeft}</span>
+                <span className="font-medium">{timeLeft}</span>
               </div>
             )}
           </div>
-          <Button variant="outline" onClick={() => signOut({ callbackUrl: '/' })}>
-            Cerrar sesión
-          </Button>
         </div>
 
         {isPastCutoff && (
-          <Alert variant="destructive">
-            <AlertTitle>Predicciones cerradas</AlertTitle>
-            <AlertDescription className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <Alert variant="destructive" className="bg-red-950/30 border-red-500/20">
+            <AlertTitle className="text-red-400">Predicciones cerradas</AlertTitle>
+            <AlertDescription className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between text-red-300">
               <span>El tiempo límite ha pasado. Puedes consultar a los ganadores.</span>
-              <Button asChild variant="outline" size="sm">
+              <Button asChild className="bg-primary text-black hover:bg-primary/90 font-semibold" size="sm">
                 <a href="/winners">Ver ganadores</a>
               </Button>
             </AlertDescription>
@@ -212,15 +209,15 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
         )}
 
         {selectionMessage && !isPastCutoff && (
-          <Alert variant="info">
-            <AlertDescription>{selectionMessage}</AlertDescription>
+          <Alert className="bg-primary/10 border-primary/20">
+            <AlertDescription className="text-primary">{selectionMessage}</AlertDescription>
           </Alert>
         )}
 
-        <Card className="border-border/60 bg-card/80 backdrop-blur">
+        <Card className="border-primary/20 bg-black/40 backdrop-blur">
           <CardHeader>
-            <CardTitle className="text-2xl">Participantes</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-2xl text-primary font-cinzel">Participantes</CardTitle>
+            <CardDescription className="text-primary/60">
               {isPastCutoff
                 ? 'Consulta las predicciones que registraste.'
                 : isEditing
@@ -231,10 +228,15 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
           <CardContent>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {participants.map((participant) => {
-                const gifteeId = getGifteeForGifter(participant.id)
-                const gifterId = getGifterForGiftee(participant.id)
+                const gifteeId = getGifteeForGifter(participant.id) // Who this participant gives TO
+                const gifterId = getGifterForGiftee(participant.id) // Who gives TO this participant
                 const isGifter = selectedPair[0] === participant.id
                 const isSelected = isGifter || selectedPair[1] === participant.id
+
+                // Check if this participant IS a gifter (gives to someone)
+                const isParticipantGifter = editingPredictions.some(pair => pair[0] === participant.id)
+                // Check if this participant IS a giftee (receives from someone)
+                const isParticipantGiftee = editingPredictions.some(pair => pair[1] === participant.id)
 
                 return (
                   <button
@@ -242,26 +244,26 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
                     type="button"
                     onClick={() => handleSelectParticipant(participant.id)}
                     className={cn(
-                      'group relative flex flex-col items-center gap-3 rounded-xl border border-border/60 bg-card/60 p-5 text-center transition-all hover:border-primary/60 hover:bg-primary/5 disabled:cursor-not-allowed disabled:opacity-75',
-                      isSelected && 'border-primary bg-primary/10 shadow-lg',
-                      (isPastCutoff || !isEditing) && 'hover:border-border/60 hover:bg-card/60'
+                      'group relative flex flex-col items-center gap-3 rounded-xl border border-primary/20 bg-black/60 p-5 text-center transition-all hover:border-primary/60 hover:bg-primary/5 hover:shadow-lg hover:shadow-primary/20 disabled:cursor-not-allowed disabled:opacity-50',
+                      isSelected && 'border-primary bg-primary/10 shadow-xl shadow-primary/30 ring-2 ring-primary/30',
+                      (isPastCutoff || !isEditing) && 'hover:border-primary/20 hover:bg-black/60 hover:shadow-none'
                     )}
                     disabled={isPastCutoff || !isEditing}
                   >
-                    <div className="relative h-24 w-24 overflow-hidden rounded-full border border-border/60 bg-muted">
+                    <div className="relative h-24 w-24 overflow-hidden rounded-full border-2 border-primary/30 bg-black">
                       <Image src={participant.profilePic} alt={participant.name} fill className="object-cover" />
                     </div>
                     <div className="space-y-2">
-                      <p className="text-base font-semibold">{participant.name}</p>
+                      <p className="text-base font-semibold text-primary">{participant.name}</p>
                       <div className="flex flex-wrap items-center justify-center gap-2">
-                        {gifterId && (
-                          <Badge variant="secondary" className="gap-1">
+                        {isParticipantGifter && (
+                          <Badge variant="secondary" className="gap-1 bg-primary/20 text-primary border-primary/30">
                             <Sparkles className="h-3.5 w-3.5" />
                             Regala
                           </Badge>
                         )}
-                        {gifteeId && (
-                          <Badge className="gap-1">
+                        {isParticipantGiftee && (
+                          <Badge className="gap-1 bg-primary text-black">
                             <Gift className="h-3.5 w-3.5" />
                             Recibe
                           </Badge>
@@ -279,7 +281,11 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
           <div className="flex flex-wrap items-center justify-center gap-3">
             {isEditing ? (
               <>
-                <Button onClick={handleSavePredictions} disabled={isSubmitting} className="min-w-[220px]">
+                <Button 
+                  onClick={handleSavePredictions} 
+                  disabled={isSubmitting} 
+                  className="min-w-[220px] bg-primary text-black hover:bg-primary/90 font-semibold"
+                >
                   {isSubmitting ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -292,13 +298,20 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
                     </>
                   )}
                 </Button>
-                <Button variant="outline" onClick={handleCancelEdit} className="min-w-[220px]">
+                <Button 
+                  variant="outline" 
+                  onClick={handleCancelEdit} 
+                  className="min-w-[220px] border-primary/30 text-primary hover:bg-primary/10"
+                >
                   <X className="mr-2 h-4 w-4" />
                   Cancelar
                 </Button>
               </>
             ) : predictions.length > 0 ? (
-              <Button onClick={() => setIsEditing(true)} className="min-w-[220px]">
+              <Button 
+                onClick={() => setIsEditing(true)} 
+                className="min-w-[220px] bg-primary text-black hover:bg-primary/90 font-semibold"
+              >
                 <Edit2 className="mr-2 h-4 w-4" />
                 Editar predicciones
               </Button>
@@ -306,7 +319,7 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
               <Button
                 onClick={handleSavePredictions}
                 disabled={isSubmitting || predictions.length === 0}
-                className="min-w-[220px]"
+                className="min-w-[220px] bg-primary text-black hover:bg-primary/90 font-semibold disabled:opacity-50"
               >
                 {isSubmitting ? (
                   <>
