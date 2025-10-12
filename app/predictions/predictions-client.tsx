@@ -358,50 +358,78 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {participants.map((participant) => {
-                  const isParticipantGifter = editingPredictions.some(pair => pair[0] === participant.id)
-                  const isParticipantGiftee = editingPredictions.some(pair => pair[1] === participant.id)
-                  const hasPair = isParticipantGifter || isParticipantGiftee
+              {editingPredictions.length > 0 ? (
+                // Show predictions with arrows
+                <div className="space-y-4">
+                  {editingPredictions.map((pair, index) => {
+                    const gifter = participants.find(p => p.id === pair[0])
+                    const giftee = participants.find(p => p.id === pair[1])
+                    if (!gifter || !giftee) return null
 
-                  return (
-                    <div
-                      key={participant.id}
-                      className={cn(
-                        'flex flex-col items-center gap-3 rounded-xl border border-primary/20 bg-black/60 p-5 text-center',
-                        hasPair ? 'border-primary/60 bg-primary/5' : 'border-primary/20'
-                      )}
-                    >
-                      <div className="relative h-24 w-24 overflow-hidden rounded-full border-2 border-primary/30 bg-black">
-                        <Image src={participant.profilePic} alt={participant.name} fill className="object-cover" />
-                      </div>
-                      <div className="space-y-2">
-                        <p className="text-base font-semibold text-primary">{participant.name}</p>
-                        <div className="flex flex-wrap items-center justify-center gap-2">
-                          {isParticipantGifter && (
-                            <Badge variant="secondary" className="gap-1 bg-primary/20 text-primary border-primary/30">
-                              <Sparkles className="h-3.5 w-3.5" />
+                    return (
+                      <div key={index} className="flex items-center justify-between gap-4 p-4 rounded-xl border border-primary/20 bg-black/60">
+                        {/* Gifter */}
+                        <div className="flex items-center gap-3 flex-1">
+                          <div className="relative h-16 w-16 overflow-hidden rounded-full border-2 border-primary/30 bg-black flex-shrink-0">
+                            <Image src={gifter.profilePic} alt={gifter.name} fill className="object-cover" />
+                          </div>
+                          <div className="flex flex-col items-start">
+                            <p className="text-base font-semibold text-primary">{gifter.name}</p>
+                            <Badge variant="secondary" className="gap-1 bg-primary/20 text-primary border-primary/30 mt-1">
+                              <Sparkles className="h-3 w-3" />
                               Regala
                             </Badge>
-                          )}
-                          {isParticipantGiftee && (
-                            <Badge className="gap-1 bg-primary text-black">
-                              <Gift className="h-3.5 w-3.5" />
+                          </div>
+                        </div>
+
+                        {/* Arrow */}
+                        <div className="flex items-center gap-2 px-4">
+                          <div className="h-px w-8 bg-primary/40"></div>
+                          <ArrowRight className="h-6 w-6 text-primary flex-shrink-0" />
+                          <div className="h-px w-8 bg-primary/40"></div>
+                        </div>
+
+                        {/* Giftee */}
+                        <div className="flex items-center gap-3 flex-1 justify-end">
+                          <div className="flex flex-col items-end">
+                            <p className="text-base font-semibold text-primary">{giftee.name}</p>
+                            <Badge className="gap-1 bg-primary text-black mt-1">
+                              <Gift className="h-3 w-3" />
                               Recibe
                             </Badge>
-                          )}
-                          {!hasPair && (
-                            <Badge variant="outline" className="gap-1 border-primary/30 text-primary/60">
-                              <AlertCircle className="h-3.5 w-3.5" />
-                              Sin pareja
-                            </Badge>
-                          )}
+                          </div>
+                          <div className="relative h-16 w-16 overflow-hidden rounded-full border-2 border-primary bg-black flex-shrink-0">
+                            <Image src={giftee.profilePic} alt={giftee.name} fill className="object-cover" />
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  )
-                })}
-              </div>
+                    )
+                  })}
+                </div>
+              ) : (
+                // Show all participants when no predictions
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  {participants.map((participant) => {
+                    return (
+                      <div
+                        key={participant.id}
+                        className="flex flex-col items-center gap-3 rounded-xl border border-primary/20 bg-black/60 p-5 text-center"
+                      >
+                        <div className="relative h-24 w-24 overflow-hidden rounded-full border-2 border-primary/30 bg-black">
+                          <Image src={participant.profilePic} alt={participant.name} fill className="object-cover" />
+                        </div>
+                        <div className="space-y-2">
+                          <p className="text-base font-semibold text-primary">{participant.name}</p>
+                          <Badge variant="outline" className="gap-1 border-primary/30 text-primary/60">
+                            <AlertCircle className="h-3.5 w-3.5" />
+                            Sin pareja
+                          </Badge>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              )}
             </CardContent>
           </Card>
         )}
