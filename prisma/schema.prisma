@@ -68,6 +68,7 @@ model Prediction {
   participantIdGiftee String
   user                User   @relation(fields: [userId], references: [id])
 
+  @@unique([userId, participantIdGifter, participantIdGiftee])
   @@map("predictions")
 }
 
