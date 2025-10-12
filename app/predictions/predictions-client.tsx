@@ -577,7 +577,7 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
                         variant="outline"
                         size="sm"
                         onClick={() => removePrediction(pair[0])}
-                        className="border-red-500/30 text-red-400 hover:bg-red-500/10 w-full sm:w-auto"
+                        className="border-red-500/50 text-red-400 bg-red-500/5 hover:bg-red-500/20 hover:border-red-500 w-full sm:w-auto"
                       >
                         <X className="h-3 w-3 sm:h-4 sm:w-4" />
                         <span className="ml-2 sm:hidden">Eliminar</span>
@@ -597,7 +597,11 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
               <>
                 {predictions.length > 0 ? (
                   <Button 
-                    onClick={() => setIsEditing(true)} 
+                    onClick={() => {
+                      setIsEditing(true)
+                      setCurrentStep('summary')
+                      setStepMessage('¡Perfecto! Revisa tus predicciones antes de guardar:')
+                    }} 
                     className="w-full sm:min-w-[200px] sm:w-auto bg-primary text-black hover:bg-primary/90 font-semibold"
                   >
                     <Edit2 className="mr-2 h-4 w-4" />
@@ -648,7 +652,7 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
                 <Button 
                   variant="outline" 
                   onClick={goBackToSelection} 
-                  className="w-full sm:min-w-[200px] sm:w-auto border-primary/30 text-primary hover:bg-primary/10"
+                  className="w-full sm:min-w-[200px] sm:w-auto border-primary/50 text-primary bg-primary/5 hover:bg-primary/10 hover:border-primary"
                 >
                   <ArrowLeft className="mr-2 h-4 w-4" />
                   Ajustar
@@ -656,7 +660,7 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
                 <Button 
                   variant="outline" 
                   onClick={handleCancelEdit} 
-                  className="w-full sm:min-w-[200px] sm:w-auto border-red-500/30 text-red-400 hover:bg-red-500/10"
+                  className="w-full sm:min-w-[200px] sm:w-auto border-red-500/50 text-red-400 bg-red-500/5 hover:bg-red-500/20 hover:border-red-500"
                 >
                   <X className="mr-2 h-4 w-4" />
                   Cancelar
