@@ -315,31 +315,31 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
           </Alert>
         )}
 
-        {/* Step indicator */}
+        {/* Step indicator - Mobile First */}
         {!isPastCutoff && (
-          <div className="flex items-center justify-center gap-4 mb-6">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 mb-6">
             <div className={cn(
-              "flex items-center gap-2 px-4 py-2 rounded-full border",
+              "flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full border w-full sm:w-auto justify-center",
               currentStep === 'overview' ? "bg-primary/20 border-primary text-primary" : "bg-black/40 border-primary/30 text-primary/60"
             )}>
               <Users className="h-4 w-4" />
-              <span className="text-sm font-medium">1. Vista General</span>
+              <span className="text-xs sm:text-sm font-medium">1. Vista General</span>
             </div>
-            <ArrowRight className="h-4 w-4 text-primary/60" />
+            <ArrowRight className="h-4 w-4 text-primary/60 hidden sm:block" />
             <div className={cn(
-              "flex items-center gap-2 px-4 py-2 rounded-full border",
+              "flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full border w-full sm:w-auto justify-center",
               currentStep === 'selecting' ? "bg-primary/20 border-primary text-primary" : "bg-black/40 border-primary/30 text-primary/60"
             )}>
               <Sparkles className="h-4 w-4" />
-              <span className="text-sm font-medium">2. Seleccionar</span>
+              <span className="text-xs sm:text-sm font-medium">2. Seleccionar</span>
             </div>
-            <ArrowRight className="h-4 w-4 text-primary/60" />
+            <ArrowRight className="h-4 w-4 text-primary/60 hidden sm:block" />
             <div className={cn(
-              "flex items-center gap-2 px-4 py-2 rounded-full border",
+              "flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full border w-full sm:w-auto justify-center",
               currentStep === 'summary' ? "bg-primary/20 border-primary text-primary" : "bg-black/40 border-primary/30 text-primary/60"
             )}>
               <CheckCircle className="h-4 w-4" />
-              <span className="text-sm font-medium">3. Confirmar</span>
+              <span className="text-xs sm:text-sm font-medium">3. Confirmar</span>
             </div>
           </div>
         )}
@@ -359,46 +359,46 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
             </CardHeader>
             <CardContent>
               {editingPredictions.length > 0 ? (
-                // Show predictions with arrows
-                <div className="space-y-4">
+                // Show predictions with arrows - Mobile First
+                <div className="space-y-3">
                   {editingPredictions.map((pair, index) => {
                     const gifter = participants.find(p => p.id === pair[0])
                     const giftee = participants.find(p => p.id === pair[1])
                     if (!gifter || !giftee) return null
 
                     return (
-                      <div key={index} className="flex items-center justify-between gap-4 p-4 rounded-xl border border-primary/20 bg-black/60">
+                      <div key={index} className="flex items-center gap-2 sm:gap-4 p-3 sm:p-4 rounded-xl border border-primary/20 bg-black/60">
                         {/* Gifter */}
-                        <div className="flex items-center gap-3 flex-1">
-                          <div className="relative h-16 w-16 overflow-hidden rounded-full border-2 border-primary/30 bg-black flex-shrink-0">
+                        <div className="flex items-center gap-2 sm:gap-3 flex-1">
+                          <div className="relative h-10 w-10 sm:h-14 sm:w-14 overflow-hidden rounded-full border-2 border-primary/30 bg-black flex-shrink-0">
                             <Image src={gifter.profilePic} alt={gifter.name} fill className="object-cover" />
                           </div>
-                          <div className="flex flex-col items-start">
-                            <p className="text-base font-semibold text-primary">{gifter.name}</p>
-                            <Badge variant="secondary" className="gap-1 bg-primary/20 text-primary border-primary/30 mt-1">
+                          <div className="flex flex-col items-start flex-1 min-w-0">
+                            <p className="text-sm sm:text-base font-semibold text-primary truncate">{gifter.name}</p>
+                            <Badge variant="secondary" className="gap-1 bg-primary/20 text-primary border-primary/30 mt-1 text-xs">
                               <Sparkles className="h-3 w-3" />
-                              Regala
+                              <span className="hidden sm:inline">Regala</span>
                             </Badge>
                           </div>
                         </div>
 
-                        {/* Arrow */}
-                        <div className="flex items-center gap-2 px-4">
-                          <div className="h-px w-8 bg-primary/40"></div>
-                          <ArrowRight className="h-6 w-6 text-primary flex-shrink-0" />
-                          <div className="h-px w-8 bg-primary/40"></div>
+                        {/* Arrow - Fill space between persons */}
+                        <div className="flex items-center flex-1 px-2 sm:px-4">
+                          <div className="flex-1 h-px bg-primary/40"></div>
+                          <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5 text-primary mx-2 sm:mx-3 flex-shrink-0" />
+                          <div className="flex-1 h-px bg-primary/40"></div>
                         </div>
 
                         {/* Giftee */}
-                        <div className="flex items-center gap-3 flex-1 justify-end">
-                          <div className="flex flex-col items-end">
-                            <p className="text-base font-semibold text-primary">{giftee.name}</p>
-                            <Badge className="gap-1 bg-primary text-black mt-1">
+                        <div className="flex items-center gap-2 sm:gap-3 flex-1 justify-end">
+                          <div className="flex flex-col items-end flex-1 min-w-0">
+                            <p className="text-sm sm:text-base font-semibold text-primary truncate">{giftee.name}</p>
+                            <Badge className="gap-1 bg-primary text-black mt-1 text-xs">
                               <Gift className="h-3 w-3" />
-                              Recibe
+                              <span className="hidden sm:inline">Recibe</span>
                             </Badge>
                           </div>
-                          <div className="relative h-16 w-16 overflow-hidden rounded-full border-2 border-primary bg-black flex-shrink-0">
+                          <div className="relative h-10 w-10 sm:h-14 sm:w-14 overflow-hidden rounded-full border-2 border-primary bg-black flex-shrink-0">
                             <Image src={giftee.profilePic} alt={giftee.name} fill className="object-cover" />
                           </div>
                         </div>
@@ -407,22 +407,23 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
                   })}
                 </div>
               ) : (
-                // Show all participants when no predictions
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                // Show all participants when no predictions - Mobile First
+                <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
                   {participants.map((participant) => {
                     return (
                       <div
                         key={participant.id}
-                        className="flex flex-col items-center gap-3 rounded-xl border border-primary/20 bg-black/60 p-5 text-center"
+                        className="flex flex-col items-center gap-2 sm:gap-3 rounded-xl border border-primary/20 bg-black/60 p-3 sm:p-4 text-center"
                       >
-                        <div className="relative h-24 w-24 overflow-hidden rounded-full border-2 border-primary/30 bg-black">
+                        <div className="relative h-16 w-16 sm:h-20 sm:w-20 overflow-hidden rounded-full border-2 border-primary/30 bg-black">
                           <Image src={participant.profilePic} alt={participant.name} fill className="object-cover" />
                         </div>
-                        <div className="space-y-2">
-                          <p className="text-base font-semibold text-primary">{participant.name}</p>
-                          <Badge variant="outline" className="gap-1 border-primary/30 text-primary/60">
-                            <AlertCircle className="h-3.5 w-3.5" />
-                            Sin pareja
+                        <div className="space-y-1 sm:space-y-2">
+                          <p className="text-sm sm:text-base font-semibold text-primary">{participant.name}</p>
+                          <Badge variant="outline" className="gap-1 border-primary/30 text-primary/60 text-xs">
+                            <AlertCircle className="h-3 w-3" />
+                            <span className="hidden sm:inline">Sin pareja</span>
+                            <span className="sm:hidden">Sin par</span>
                           </Badge>
                         </div>
                       </div>
@@ -434,20 +435,20 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
           </Card>
         )}
 
-        {/* Step 2: Selecting */}
+        {/* Step 2: Selecting - Mobile First */}
         {currentStep === 'selecting' && currentGifter && (
           <Card className="border-primary/20 bg-black/40 backdrop-blur">
             <CardHeader>
-              <CardTitle className="text-2xl text-primary font-cinzel">Seleccionar Pareja</CardTitle>
-              <CardDescription className="text-primary/60">
+              <CardTitle className="text-xl sm:text-2xl text-primary font-cinzel">Seleccionar Pareja</CardTitle>
+              <CardDescription className="text-sm sm:text-base text-primary/60">
                 {stepMessage}
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="mb-6">
-                <div className="flex items-center justify-center gap-4 mb-4">
-                  <div className="flex flex-col items-center gap-2">
-                    <div className="relative h-20 w-20 overflow-hidden rounded-full border-2 border-primary bg-primary/10">
+              <div className="mb-4 sm:mb-6">
+                <div className="flex items-center justify-center gap-2 sm:gap-4 mb-4 p-3 sm:p-4 rounded-xl bg-primary/5 border border-primary/20">
+                  <div className="flex flex-col items-center gap-2 flex-shrink-0">
+                    <div className="relative h-16 w-16 sm:h-20 sm:w-20 overflow-hidden rounded-full border-2 border-primary bg-primary/10">
                       <Image 
                         src={participants.find(p => p.id === currentGifter)?.profilePic || ''} 
                         alt={participants.find(p => p.id === currentGifter)?.name || ''} 
@@ -455,22 +456,29 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
                         className="object-cover" 
                       />
                     </div>
-                    <p className="text-sm font-semibold text-primary">
+                    <p className="text-sm sm:text-base font-semibold text-primary">
                       {participants.find(p => p.id === currentGifter)?.name}
                     </p>
-                    <Badge className="gap-1 bg-primary text-black">
-                      <Sparkles className="h-3.5 w-3.5" />
+                    <Badge className="gap-1 bg-primary text-black text-xs">
+                      <Sparkles className="h-3 w-3" />
                       Regala
                     </Badge>
                   </div>
-                  <ArrowRight className="h-8 w-8 text-primary" />
-                  <div className="text-center">
-                    <p className="text-sm text-primary/60">Regalará a...</p>
+                  
+                  {/* Arrow with connecting lines */}
+                  <div className="flex items-center flex-1 px-4">
+                    <div className="flex-1 h-px bg-primary/40"></div>
+                    <ArrowRight className="h-6 w-6 sm:h-8 sm:w-8 text-primary mx-3 flex-shrink-0" />
+                    <div className="flex-1 h-px bg-primary/40"></div>
+                  </div>
+                  
+                  <div className="text-center flex-shrink-0">
+                    <p className="text-xs sm:text-sm text-primary/60">Regalará a...</p>
                   </div>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3">
                 {availableGiftees.map((gifteeId) => {
                   const giftee = participants.find(p => p.id === gifteeId)
                   if (!giftee) return null
@@ -482,17 +490,17 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
                       onClick={() => selectGiftee(gifteeId)}
                       disabled={isSelecting}
                       className={cn(
-                        "group relative flex flex-col items-center gap-3 rounded-xl border border-primary/20 bg-black/60 p-5 text-center transition-all hover:border-primary hover:bg-primary/10 hover:shadow-lg hover:shadow-primary/20",
+                        "group relative flex flex-col items-center gap-2 sm:gap-3 rounded-xl border border-primary/20 bg-black/60 p-3 sm:p-4 text-center transition-all hover:border-primary hover:bg-primary/10 hover:shadow-lg hover:shadow-primary/20 active:scale-95",
                         isSelecting && "opacity-50 cursor-not-allowed"
                       )}
                     >
-                      <div className="relative h-20 w-20 overflow-hidden rounded-full border-2 border-primary/30 bg-black">
+                      <div className="relative h-14 w-14 sm:h-16 sm:w-16 overflow-hidden rounded-full border-2 border-primary/30 bg-black">
                         <Image src={giftee.profilePic} alt={giftee.name} fill className="object-cover" />
                       </div>
-                      <div className="space-y-2">
-                        <p className="text-base font-semibold text-primary">{giftee.name}</p>
-                        <Badge variant="secondary" className="gap-1 bg-primary/20 text-primary border-primary/30">
-                          <Gift className="h-3.5 w-3.5" />
+                      <div className="space-y-1 sm:space-y-2">
+                        <p className="text-sm sm:text-base font-semibold text-primary">{giftee.name}</p>
+                        <Badge variant="secondary" className="gap-1 bg-primary/20 text-primary border-primary/30 text-xs">
+                          <Gift className="h-3 w-3" />
                           Recibe
                         </Badge>
                       </div>
@@ -504,14 +512,14 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
           </Card>
         )}
 
-        {/* Step 3: Summary */}
+        {/* Step 3: Summary - Mobile First */}
         {currentStep === 'summary' && (
           <Card className="border-primary/20 bg-black/40 backdrop-blur">
             <CardHeader>
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div>
-                  <CardTitle className="text-2xl text-primary font-cinzel">Resumen de Predicciones</CardTitle>
-                  <CardDescription className="text-primary/60">
+                  <CardTitle className="text-xl sm:text-2xl text-primary font-cinzel">Resumen de Predicciones</CardTitle>
+                  <CardDescription className="text-sm sm:text-base text-primary/60">
                     {stepMessage}
                   </CardDescription>
                 </div>
@@ -520,43 +528,48 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
                     variant="outline"
                     size="sm"
                     onClick={cleanupDuplicates}
-                    className="border-orange-500/30 text-orange-400 hover:bg-orange-500/10"
+                    className="border-orange-500/30 text-orange-400 hover:bg-orange-500/10 w-full sm:w-auto text-xs sm:text-sm"
                   >
-                    <AlertCircle className="mr-2 h-4 w-4" />
+                    <AlertCircle className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
                     Limpiar duplicados
                   </Button>
                 )}
               </div>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 {editingPredictions.map((pair, index) => {
                   const gifter = participants.find(p => p.id === pair[0])
                   const giftee = participants.find(p => p.id === pair[1])
                   if (!gifter || !giftee) return null
 
                   return (
-                    <div key={index} className="flex items-center justify-between p-4 rounded-lg border border-primary/20 bg-black/60">
-                      <div className="flex items-center gap-4">
-                        <div className="flex items-center gap-3">
-                          <div className="relative h-12 w-12 overflow-hidden rounded-full border border-primary/30">
+                    <div key={index} className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3 sm:p-4 rounded-lg border border-primary/20 bg-black/60">
+                      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 w-full">
+                        <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
+                          <div className="relative h-10 w-10 sm:h-12 sm:w-12 overflow-hidden rounded-full border border-primary/30 flex-shrink-0">
                             <Image src={gifter.profilePic} alt={gifter.name} fill className="object-cover" />
                           </div>
-                          <span className="font-semibold text-primary">{gifter.name}</span>
-                          <Badge className="gap-1 bg-primary/20 text-primary border-primary/30">
-                            <Sparkles className="h-3.5 w-3.5" />
-                            Regala
+                          <span className="text-sm sm:text-base font-semibold text-primary">{gifter.name}</span>
+                          <Badge className="gap-1 bg-primary/20 text-primary border-primary/30 text-xs ml-auto sm:ml-0">
+                            <Sparkles className="h-3 w-3" />
+                            <span className="hidden sm:inline">Regala</span>
                           </Badge>
                         </div>
-                        <ArrowRight className="h-5 w-5 text-primary/60" />
-                        <div className="flex items-center gap-3">
-                          <div className="relative h-12 w-12 overflow-hidden rounded-full border border-primary/30">
+                        {/* Arrow with connecting lines - only on desktop */}
+                        <div className="hidden sm:flex items-center flex-1 px-4">
+                          <div className="flex-1 h-px bg-primary/40"></div>
+                          <ArrowRight className="h-4 w-4 text-primary/60 mx-3 flex-shrink-0" />
+                          <div className="flex-1 h-px bg-primary/40"></div>
+                        </div>
+                        <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto pl-12 sm:pl-0">
+                          <div className="relative h-10 w-10 sm:h-12 sm:w-12 overflow-hidden rounded-full border border-primary/30 flex-shrink-0">
                             <Image src={giftee.profilePic} alt={giftee.name} fill className="object-cover" />
                           </div>
-                          <span className="font-semibold text-primary">{giftee.name}</span>
-                          <Badge className="gap-1 bg-primary text-black">
-                            <Gift className="h-3.5 w-3.5" />
-                            Recibe
+                          <span className="text-sm sm:text-base font-semibold text-primary">{giftee.name}</span>
+                          <Badge className="gap-1 bg-primary text-black text-xs ml-auto sm:ml-0">
+                            <Gift className="h-3 w-3" />
+                            <span className="hidden sm:inline">Recibe</span>
                           </Badge>
                         </div>
                       </div>
@@ -564,9 +577,10 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
                         variant="outline"
                         size="sm"
                         onClick={() => removePrediction(pair[0])}
-                        className="border-red-500/30 text-red-400 hover:bg-red-500/10"
+                        className="border-red-500/30 text-red-400 hover:bg-red-500/10 w-full sm:w-auto"
                       >
-                        <X className="h-4 w-4" />
+                        <X className="h-3 w-3 sm:h-4 sm:w-4" />
+                        <span className="ml-2 sm:hidden">Eliminar</span>
                       </Button>
                     </div>
                   )
@@ -576,15 +590,15 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
           </Card>
         )}
 
-        {/* Navigation buttons */}
+        {/* Navigation buttons - Mobile First */}
         {!isPastCutoff && (
-          <div className="flex flex-wrap items-center justify-center gap-3">
+          <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center justify-center gap-3 w-full sm:w-auto">
             {currentStep === 'overview' && (
               <>
                 {predictions.length > 0 ? (
                   <Button 
                     onClick={() => setIsEditing(true)} 
-                    className="min-w-[220px] bg-primary text-black hover:bg-primary/90 font-semibold"
+                    className="w-full sm:min-w-[200px] sm:w-auto bg-primary text-black hover:bg-primary/90 font-semibold"
                   >
                     <Edit2 className="mr-2 h-4 w-4" />
                     Editar predicciones
@@ -592,7 +606,7 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
                 ) : (
                   <Button
                     onClick={startSelection}
-                    className="min-w-[220px] bg-primary text-black hover:bg-primary/90 font-semibold"
+                    className="w-full sm:min-w-[200px] sm:w-auto bg-primary text-black hover:bg-primary/90 font-semibold"
                   >
                     <Sparkles className="mr-2 h-4 w-4" />
                     Comenzar predicciones
@@ -605,7 +619,7 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
               <Button 
                 variant="outline" 
                 onClick={() => setCurrentStep('overview')} 
-                className="min-w-[220px] border-primary/30 text-primary hover:bg-primary/10"
+                className="w-full sm:min-w-[200px] sm:w-auto border-primary/30 text-primary hover:bg-primary/10"
               >
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Volver
@@ -617,7 +631,7 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
                 <Button 
                   onClick={handleSavePredictions} 
                   disabled={isSubmitting} 
-                  className="min-w-[220px] bg-primary text-black hover:bg-primary/90 font-semibold"
+                  className="w-full sm:min-w-[200px] sm:w-auto bg-primary text-black hover:bg-primary/90 font-semibold"
                 >
                   {isSubmitting ? (
                     <>
@@ -634,7 +648,7 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
                 <Button 
                   variant="outline" 
                   onClick={goBackToSelection} 
-                  className="min-w-[220px] border-primary/30 text-primary hover:bg-primary/10"
+                  className="w-full sm:min-w-[200px] sm:w-auto border-primary/30 text-primary hover:bg-primary/10"
                 >
                   <ArrowLeft className="mr-2 h-4 w-4" />
                   Ajustar
@@ -642,7 +656,7 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
                 <Button 
                   variant="outline" 
                   onClick={handleCancelEdit} 
-                  className="min-w-[220px] border-red-500/30 text-red-400 hover:bg-red-500/10"
+                  className="w-full sm:min-w-[200px] sm:w-auto border-red-500/30 text-red-400 hover:bg-red-500/10"
                 >
                   <X className="mr-2 h-4 w-4" />
                   Cancelar
