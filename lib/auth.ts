@@ -1,5 +1,6 @@
 import { type AuthOptions } from 'next-auth';
 import FacebookProvider from 'next-auth/providers/facebook';
+import CredentialsProvider from 'next-auth/providers/credentials';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import prisma from '@/lib/prisma';
 
@@ -34,7 +35,55 @@ export const authOptions: AuthOptions = {
                     image: profile.picture?.data?.url ?? null
                 };
             }
-        })
+        }),
+        ...(process.env.NODE_ENV !== 'production' || process.env.ENABLE_DEV_AUTH === 'true'
+            ? [
+                CredentialsProvider({
+                    name: 'Dev Credentials',
+                    credentials: {
+                        name: { label: 'Name', type: 'text' },
+                        email: { label: 'Email', type: 'text' },
+                        admin: { label: 'Admin', type: 'checkbox' },
+                        secret: { label: 'Secret', type: 'password' },
+                    },
+                    async authorize(credentials) {
+                        if (!credentials) return null;
+                        const devEnabled = process.env.NODE_ENV !== 'production' || process.env.ENABLE_DEV_AUTH === 'true';
+                        if (!devEnabled) return null;
+
+                        const requiredSecret = process.env.NEXTAUTH_DEV_SECRET;
+                        if (requiredSecret && credentials.secret !== requiredSecret) {
+                            return null;
+                        }
+
+                        const rawName = (credentials.name as string | undefined)?.trim();
+                        const rawEmail = (credentials.email as string | undefined)?.trim().toLowerCase();
+                        const wantsAdmin = String(credentials.admin) === 'true' || String(credentials.admin) === '1' || credentials.admin === 'on';
+
+                        if (!rawName && !rawEmail) return null;
+
+                        // Create or update the user for dev sign-in
+                        let user;
+                        if (rawEmail) {
+                            user = await prisma.user.upsert({
+                                where: { email: rawEmail },
+                                create: { email: rawEmail, name: rawName ?? null, isAdmin: wantsAdmin },
+                                update: { name: rawName ?? undefined, isAdmin: wantsAdmin },
+                            });
+                        } else {
+                            // No email provided, fall back to unique name
+                            user = await prisma.user.upsert({
+                                where: { name: rawName! },
+                                create: { name: rawName!, isAdmin: wantsAdmin },
+                                update: { isAdmin: wantsAdmin },
+                            });
+                        }
+
+                        return { id: user.id, name: user.name, email: user.email, image: user.image } as any;
+                    },
+                })
+            ]
+            : [])
     ],
     secret: process.env.NEXTAUTH_SECRET,
     session: {

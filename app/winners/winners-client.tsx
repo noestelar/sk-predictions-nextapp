@@ -64,6 +64,26 @@ export default function WinnersClient({ scores, participants, results, predictio
     return set
   }, [results])
 
+  // Attach indices to predictions for animation gating and group by user
+  const indexedPredictions = useMemo(() => (
+    predictions.map((p, idx) => ({ ...p, idx }))
+  ), [predictions])
+
+  const predictionsByUser = useMemo(() => {
+    const map = new Map<string, { userId: string; userName: string | null; items: typeof indexedPredictions }>()
+    indexedPredictions.forEach(p => {
+      const key = p.userId
+      const existing = map.get(key)
+      if (existing) {
+        existing.items.push(p)
+      } else {
+        map.set(key, { userId: key, userName: p.userName ?? null, items: [p] })
+      }
+    })
+    // Return as a stable array sorted by userName
+    return Array.from(map.values()).sort((a, b) => (a.userName ?? 'Usuario').localeCompare(b.userName ?? 'Usuario'))
+  }, [indexedPredictions])
+
   // Clean up timeouts on unmount or when skipping
   const clearAllTimers = () => {
     timeoutsRef.current.forEach(id => window.clearTimeout(id))
@@ -202,36 +222,44 @@ export default function WinnersClient({ scores, participants, results, predictio
 
   const renderPredictionMap = () => (
     <div>
-      <div className="mb-3 text-center text-sm text-primary/80">Mapa de predicciones (revelando...)</div>
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
-        {predictions.slice(0, predictionIndex).map((p, i) => {
-          const gifter = participants.find(pp => pp.id === p.participantIdGifter)
-          const giftee = participants.find(pp => pp.id === p.participantIdGiftee)
-          if (!gifter || !giftee) return null
-          return (
-            <div key={`${i}-${p.userId}`} className="group relative overflow-hidden rounded-xl border border-primary/20 bg-black/60 p-3">
-              <div className="flex items-center justify-between text-white">
-                <div className="flex items-center gap-2">
-                  <div className="relative h-8 w-8 overflow-hidden rounded-full border border-white/30">
-                    <Image src={gifter.profilePic} alt={gifter.name} fill className="object-cover" />
-                  </div>
-                  <span className="truncate text-sm font-medium text-white/90">{gifter.name}</span>
-                </div>
-                <ArrowRight className="h-4 w-4 text-primary/70" />
-                <div className="flex items-center gap-2">
-                  <span className="truncate text-sm font-medium text-white/90">{giftee.name}</span>
-                  <div className="relative h-8 w-8 overflow-hidden rounded-full border border-white/30">
-                    <Image src={giftee.profilePic} alt={giftee.name} fill className="object-cover" />
-                  </div>
-                </div>
+      <div className="mb-3 text-center text-sm text-primary/80">Mapa de predicciones por usuario</div>
+      <div className="space-y-4">
+        {predictionsByUser.map(group => (
+          <Card key={group.userId} className="border-primary/30 bg-black/60 backdrop-blur">
+            <CardHeader className="py-3">
+              <CardTitle className="text-base text-white/90">Predicciones de {group.userName ?? 'Usuario'}</CardTitle>
+              <CardDescription className="text-xs text-primary/70">{group.items.length} predicción(es)</CardDescription>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3">
+                {group.items
+                  .filter(item => item.idx < predictionIndex)
+                  .map(item => {
+                    const gifter = participants.find(pp => pp.id === item.participantIdGifter)
+                    const giftee = participants.find(pp => pp.id === item.participantIdGiftee)
+                    if (!gifter || !giftee) return null
+                    return (
+                      <div key={`${group.userId}-${item.idx}`} className="flex items-center justify-between rounded-lg border border-primary/20 bg-black/50 p-2">
+                        <div className="flex items-center gap-2">
+                          <div className="relative h-8 w-8 overflow-hidden rounded-full border border-white/20">
+                            <Image src={gifter.profilePic} alt={gifter.name} fill className="object-cover" />
+                          </div>
+                          <span className="truncate text-sm text-white/90">{gifter.name}</span>
+                        </div>
+                        <ArrowRight className="h-4 w-4 text-primary/70" />
+                        <div className="flex items-center gap-2">
+                          <span className="truncate text-sm text-white/90">{giftee.name}</span>
+                          <div className="relative h-8 w-8 overflow-hidden rounded-full border border-white/20">
+                            <Image src={giftee.profilePic} alt={giftee.name} fill className="object-cover" />
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })}
               </div>
-              {/* Tooltip */}
-              <div className="pointer-events-none absolute inset-x-0 bottom-0 translate-y-full bg-primary/15 px-3 py-2 text-center text-xs text-primary transition-all group-hover:translate-y-0">
-                Predicho por {p.userName ?? 'Usuario'}
-              </div>
-            </div>
-          )
-        })}
+            </CardContent>
+          </Card>
+        ))}
       </div>
     </div>
   )
@@ -246,37 +274,47 @@ export default function WinnersClient({ scores, participants, results, predictio
 
   const renderResultsReveal = () => (
     <div>
-      <div className="mb-3 text-center text-sm text-primary/80">Resultados de predicciones</div>
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
-        {predictions.slice(0, revealedPredictions).map((p, i) => {
-          const gifter = participants.find(pp => pp.id === p.participantIdGifter)
-          const giftee = participants.find(pp => pp.id === p.participantIdGiftee)
-          if (!gifter || !giftee) return null
-          const correct = resultsSet.has(`${p.participantIdGifter}|${p.participantIdGiftee}`)
-          return (
-            <div key={`res-${i}-${p.userId}`} className={`relative overflow-hidden rounded-xl border p-3 transition-colors ${correct ? 'border-emerald-500/40 bg-emerald-600/15' : 'border-red-500/40 bg-red-600/15'}`}>
-              <div className="flex items-center justify-between text-white">
-                <div className="flex items-center gap-2">
-                  <div className="relative h-8 w-8 overflow-hidden rounded-full border border-white/30">
-                    <Image src={gifter.profilePic} alt={gifter.name} fill className="object-cover" />
-                  </div>
-                  <span className="truncate text-sm font-medium text-white/90">{gifter.name}</span>
-                </div>
-                {correct ? <Check className="h-4 w-4 text-emerald-300" /> : <X className="h-4 w-4 text-red-300" />}
-                <div className="flex items-center gap-2">
-                  <span className="truncate text-sm font-medium text-white/90">{giftee.name}</span>
-                  <div className="relative h-8 w-8 overflow-hidden rounded-full border border-white/30">
-                    <Image src={giftee.profilePic} alt={giftee.name} fill className="object-cover" />
-                  </div>
-                </div>
+      <div className="mb-3 text-center text-sm text-primary/80">Resultados de predicciones por usuario</div>
+      <div className="space-y-4">
+        {predictionsByUser.map(group => (
+          <Card key={`reveal-${group.userId}`} className="border-primary/30 bg-black/60 backdrop-blur">
+            <CardHeader className="py-3">
+              <CardTitle className="text-base text-white/90">Predicciones de {group.userName ?? 'Usuario'}</CardTitle>
+              <CardDescription className="text-xs text-primary/70">{group.items.length} predicción(es)</CardDescription>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3">
+                {group.items
+                  .filter(item => item.idx < revealedPredictions)
+                  .map(item => {
+                    const gifter = participants.find(pp => pp.id === item.participantIdGifter)
+                    const giftee = participants.find(pp => pp.id === item.participantIdGiftee)
+                    if (!gifter || !giftee) return null
+                    const correct = resultsSet.has(`${item.participantIdGifter}|${item.participantIdGiftee}`)
+                    return (
+                      <div key={`res-${group.userId}-${item.idx}`} className={`flex items-center justify-between rounded-lg border p-2 transition-colors ${correct ? 'border-emerald-500/40 bg-emerald-600/15' : 'border-red-500/40 bg-red-600/15'}`}>
+                        <div className="flex items-center gap-2">
+                          <div className="relative h-8 w-8 overflow-hidden rounded-full border border-white/20">
+                            <Image src={gifter.profilePic} alt={gifter.name} fill className="object-cover" />
+                          </div>
+                          <span className="truncate text-sm text-white/90">{gifter.name}</span>
+                        </div>
+                        {correct ? <Check className="h-4 w-4 text-emerald-300" /> : <X className="h-4 w-4 text-red-300" />}
+                        <div className="flex items-center gap-2">
+                          <span className="truncate text-sm text-white/90">{giftee.name}</span>
+                          <div className="relative h-8 w-8 overflow-hidden rounded-full border border-white/20">
+                            <Image src={giftee.profilePic} alt={giftee.name} fill className="object-cover" />
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })}
               </div>
-              <div className="mt-2 text-xs text-white/80">Predicho por {p.userName ?? 'Usuario'}</div>
-            </div>
-          )
-        })}
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
-      {/* Confetti overlay */}
       {showConfetti && (
         <div className="pointer-events-none fixed inset-0 flex items-start justify-center">
           <div className="mt-10 grid grid-cols-8 gap-2 opacity-90">
