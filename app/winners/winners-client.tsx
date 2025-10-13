@@ -362,12 +362,17 @@ export default function WinnersClient({ scores, participants, results, predictio
           <>
             <div className="space-y-4">
               {scores.map((score, index) => (
-                <Card key={score.userId} className={`${getHighlightVariant(index)} transition-shadow hover:shadow-lg`}>
+                <Card
+                  key={score.userId}
+                  className={`${getHighlightVariant(index)} transition-shadow hover:shadow-lg${index > 2 ? ' bg-black border-neutral-800' : ''}`}
+                >
                   <CardHeader className="flex flex-row items-center justify-between space-y-0">
                     <div className="flex items-center gap-4">
                       {getPositionIcon(index)}
                       <div>
-                        <CardTitle className="text-2xl font-semibold text-primary">{score.userName ?? 'Usuario'}</CardTitle>
+                        <CardTitle className="text-2xl font-semibold text-primary">
+                          {score.userName ?? 'Usuario'}
+                        </CardTitle>
                         <CardDescription>
                           {score.correctGuesses} aciertos de {score.totalGuesses} predicciones
                         </CardDescription>
