@@ -27,10 +27,20 @@ export default function Header() {
     <header className="sticky top-0 z-50 w-full border-b border-primary/20 bg-black backdrop-blur">
       <div className="container flex h-16 items-center justify-between px-4">
         <Link href="/" className="flex items-center space-x-2">
-          <span className="font-bold text-xl font-cinzel text-primary">SK Predictions</span>
+          <Image 
+            src="/favicon.ico" 
+            width={32} 
+            height={32} 
+            alt="SK Predictions logo" 
+            className="rounded-md"
+            priority
+          />
         </Link>
 
         <div className="flex items-center gap-4">
+          <Button asChild size="sm" className="gap-2 bg-primary text-black hover:bg-primary/90 font-semibold">
+            <Link href="/predictions">Predicciones</Link>
+          </Button>
           {status === 'loading' ? (
             <div className="h-10 w-10 animate-pulse rounded-full bg-primary/20"></div>
           ) : session?.user ? (

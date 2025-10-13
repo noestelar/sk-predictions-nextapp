@@ -20,7 +20,7 @@ async function WinnersList() {
 
     const [predictions, users, results, participants, cutoffTime] = await Promise.all([
         prisma.prediction.findMany(),
-        prisma.user.findMany(),
+        prisma.user.findMany({ select: { id: true, name: true, image: true } }),
         prisma.result.findMany(),
         prisma.participant.findMany(),
         prisma.cutoffTime.findFirst({ orderBy: { createdAt: 'desc' } })
@@ -30,6 +30,7 @@ async function WinnersList() {
     const userScores = new Map<string, {
         userId: string;
         userName: string | null;
+        userImage: string | null;
         correctGuesses: number;
         totalGuesses: number;
     }>();
@@ -44,12 +45,14 @@ async function WinnersList() {
         const currentScore = userScores.get(prediction.userId) || {
             userId: prediction.userId,
             userName: user?.name ?? null,
+            userImage: user?.image ?? null,
             correctGuesses: 0,
             totalGuesses: 0,
         };
 
         userScores.set(prediction.userId, {
             ...currentScore,
+            userImage: currentScore.userImage,
             correctGuesses: currentScore.correctGuesses + (isCorrect ? 1 : 0),
             totalGuesses: currentScore.totalGuesses + 1,
         });

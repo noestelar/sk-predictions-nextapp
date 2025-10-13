@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { Trophy, Medal, Star, Gift, ArrowRight, Sparkles, PartyPopper, PlayCircle, SkipForward, Check, X } from 'lucide-react'
+import { Trophy, Medal, Star, Gift, ArrowRight, Sparkles, PartyPopper, PlayCircle, SkipForward, Check, X, UserCircle } from 'lucide-react'
 import Image from 'next/image'
 import { signOut } from 'next-auth/react'
 
@@ -18,6 +18,7 @@ import {
 interface Score {
   userId: string
   userName: string | null
+  userImage: string | null
   correctGuesses: number
   totalGuesses: number
 }
@@ -56,7 +57,21 @@ export default function WinnersClient({ scores, participants, results, predictio
   const [predictionIndex, setPredictionIndex] = useState(0)
   const [revealedPredictions, setRevealedPredictions] = useState<number>(0)
   const [showConfetti, setShowConfetti] = useState(false)
+  const [isDesktop, setIsDesktop] = useState(true)
   const timeoutsRef = useRef<number[]>([])
+
+  // Detect if device supports hover (desktop)
+  useEffect(() => {
+    const checkDesktop = () => {
+      const hasHover = window.matchMedia('(hover: hover)').matches
+      const isWideScreen = window.innerWidth > 768
+      setIsDesktop(hasHover && isWideScreen)
+    }
+    
+    checkDesktop()
+    window.addEventListener('resize', checkDesktop)
+    return () => window.removeEventListener('resize', checkDesktop)
+  }, [])
 
   const resultsSet = useMemo(() => {
     const set = new Set<string>()
@@ -166,10 +181,44 @@ export default function WinnersClient({ scores, participants, results, predictio
   }
 
   const getHighlightVariant = (index: number) => {
-    if (index === 0) return 'bg-yellow-500/10 border-yellow-500'
-    if (index === 1) return 'bg-slate-400/10 border-slate-400'
-    if (index === 2) return 'bg-amber-600/10 border-amber-600'
+    if (index === 0) return 'metal-card metal-gold'
+    if (index === 1) return 'metal-card metal-silver'
+    if (index === 2) return 'metal-card metal-bronze'
     return 'bg-card/70 border-border/60'
+  }
+
+  const lerp = (a: number, b: number, t: number) => a + (b - a) * t
+
+  const handleCardMouseMove = (e: React.MouseEvent<HTMLDivElement>, cardRef: HTMLDivElement) => {
+    const rect = cardRef.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const y = e.clientY - rect.top
+    
+    const centerX = rect.width / 2
+    const centerY = rect.height / 2
+    
+    const rotateX = ((y - centerY) / centerY) * -10
+    const rotateY = ((x - centerX) / centerX) * 10
+    
+    const gradientX = (x / rect.width) * 100
+    const gradientY = (y / rect.height) * 100
+    
+    const angleRad = Math.atan2(y - centerY, x - centerX)
+    const angleDeg = angleRad * (180 / Math.PI)
+    
+    cardRef.style.setProperty('--card-rotate-x', `${rotateX}deg`)
+    cardRef.style.setProperty('--card-rotate-y', `${rotateY}deg`)
+    cardRef.style.setProperty('--gradient-x', `${gradientX}%`)
+    cardRef.style.setProperty('--gradient-y', `${gradientY}%`)
+    cardRef.style.setProperty('--gradient-angle', `${angleDeg}deg`)
+  }
+
+  const handleCardMouseLeave = (cardRef: HTMLDivElement) => {
+    cardRef.style.setProperty('--card-rotate-x', '0deg')
+    cardRef.style.setProperty('--card-rotate-y', '0deg')
+    cardRef.style.setProperty('--gradient-x', '50%')
+    cardRef.style.setProperty('--gradient-y', '50%')
+    cardRef.style.setProperty('--gradient-angle', '0deg')
   }
 
   const renderIntro = () => (
@@ -361,37 +410,65 @@ export default function WinnersClient({ scores, participants, results, predictio
         {(phase === 'winners') && (
           <>
             <div className="space-y-4">
-              {scores.map((score, index) => (
-                <Card
-                  key={score.userId}
-                  className={`${getHighlightVariant(index)} transition-shadow hover:shadow-lg${index > 2 ? ' bg-black border-neutral-800' : ''}`}
-                >
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0">
-                    <div className="flex items-center gap-4">
-                      {getPositionIcon(index)}
-                      <div>
-                        <CardTitle className="text-2xl font-semibold text-primary">
-                          {score.userName ?? 'Usuario'}
-                        </CardTitle>
-                        <CardDescription>
-                          {score.correctGuesses} aciertos de {score.totalGuesses} predicciones
-                        </CardDescription>
-                      </div>
-                    </div>
-                    <Badge variant="secondary" className="text-base bg-primary/20 text-primary border border-primary/30">
-                      {((score.correctGuesses / score.totalGuesses) * 100).toFixed(1)}%
-                    </Badge>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-sm text-muted-foreground">
-                      {index === 0 && '🏆 ¡Campeón absoluto de las predicciones!'}
-                      {index === 1 && '🥈 Gran actuación, casi perfecto.'}
-                      {index === 2 && '🥉 Excelente intuición festiva.'}
-                      {index > 2 && 'Gracias por participar y compartir la emoción.'}
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+              {scores.map((score, index) => {
+                const isMetal = index < 3
+                return (
+                  <div key={score.userId} className={isMetal ? 'metal-card-container' : ''}>
+                    <Card
+                      ref={(el) => {
+                        if (el && isMetal && isDesktop) {
+                          // Initialize CSS variables to prevent flash
+                          el.style.setProperty('--card-rotate-x', '0deg')
+                          el.style.setProperty('--card-rotate-y', '0deg')
+                          el.style.setProperty('--gradient-x', '50%')
+                          el.style.setProperty('--gradient-y', '50%')
+                          el.style.setProperty('--gradient-angle', '0deg')
+                          
+                          // Only attach mouse handlers on desktop
+                          el.onmousemove = (e) => handleCardMouseMove(e as any, el)
+                          el.onmouseleave = () => handleCardMouseLeave(el)
+                        }
+                      }}
+                      className={`${getHighlightVariant(index)} ${isMetal ? 'metal-text-contrast' : ''} transition-shadow hover:shadow-lg${index > 2 ? ' bg-black border-neutral-800' : ''}`}
+                    >
+                      {isMetal && <div className="metal-card-inner" />}
+                      <CardHeader className="flex flex-row items-center justify-between space-y-0 relative z-10">
+                        <div className="flex items-center gap-4">
+                          {getPositionIcon(index)}
+                          <div className="flex items-center gap-3">
+                            <div className="relative h-10 w-10 overflow-hidden rounded-full border-2 border-primary/30 bg-black/40">
+                              {score.userImage ? (
+                                <Image src={score.userImage} alt={score.userName ?? 'Usuario'} fill className="object-cover" />
+                              ) : (
+                                <div className="flex h-full w-full items-center justify-center text-primary/60">
+                                  <UserCircle className="h-8 w-8" />
+                                </div>
+                              )}
+                            </div>
+                            <CardTitle className={`text-2xl font-semibold ${isMetal ? 'text-white text-shadow-md' : 'text-primary'}`}>
+                              {score.userName ?? 'Usuario'}
+                            </CardTitle>
+                            <CardDescription className={isMetal ? 'text-white/90 text-shadow-sm' : ''}>
+                              {score.correctGuesses} aciertos de {score.totalGuesses} predicciones
+                            </CardDescription>
+                          </div>
+                        </div>
+                        <Badge variant="secondary" className={`text-base ${isMetal ? 'badge-contrast' : 'bg-primary/20 text-primary border border-primary/30'}`}>
+                          {((score.correctGuesses / score.totalGuesses) * 100).toFixed(1)}%
+                        </Badge>
+                      </CardHeader>
+                      <CardContent className="relative z-10">
+                        <div className={`text-sm ${isMetal ? 'text-white/90 text-shadow-sm' : 'text-muted-foreground'}`}>
+                          {index === 0 && '🏆 ¡Campeón absoluto de las predicciones!'}
+                          {index === 1 && '🥈 Gran actuación, casi perfecto.'}
+                          {index === 2 && '🥉 Excelente intuición festiva.'}
+                          {index > 2 && 'Gracias por participar y compartir la emoción.'}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                )
+              })}
             </div>
             <div className="flex items-center justify-center gap-3 pt-2">
               {isPastCutoff && (

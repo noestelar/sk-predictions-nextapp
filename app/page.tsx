@@ -219,7 +219,7 @@ END:VCALENDAR`;
             {/* Calendar buttons with enhanced styling */}
             <div className="space-y-4 animate-[fadeIn_0.8s_ease-out_1.3s_both]">
               <p className="text-center text-sm text-zinc-300">
-                Para asegurar su asistencia, agreguen este distinguido evento a sus calendarios (hora de Ciudad de México):
+                Para asegurar su asistencia, agreguen este distinguido evento a sus calendarios:
               </p>
 
               <div className="space-y-3">
