@@ -13,6 +13,70 @@ export default function HomePage() {
   const router = useRouter()
   const [showPredictionsButton] = useState(true) // Hidden for now
 
+  // Calendar Date/Times in America/Mexico_City timezone
+  // 20 de Diciembre 2025, 8:00 PM - 2:00 AM (next day)
+  // Date string: Start: 2025-12-20T20:00:00-06:00, End: 2025-12-21T02:00:00-06:00
+
+  // For Google: YYYYMMDDTHHmmssZ with Z for UTC, but Google Calendar supports TZID
+  // We'll use start/end in UTC offset for Mexico City (in December, it's Standard Time, UTC-6)
+  const eventStart = '20251220T200000'
+  const eventEnd = '20251221T020000'
+  const tzid = 'America/Mexico_City'
+
+  // Google Calendar - use local time and add "ctz=America/Mexico_City"
+  const googleUrl =
+    `https://calendar.google.com/calendar/render?action=TEMPLATE` +
+    `&text=Velada+SKToxqui+2025` +
+    `&dates=${eventStart}/${eventEnd}` +
+    `&details=Un+evento+exclusivo+que+promete+ser+inolvidable.+Piñata,+comida,+regalos+y+mucha+diversión!` +
+    `&location=Casa+de+Martín` +
+    `&ctz=America/Mexico_City`
+
+  // Outlook - use ISO format with offset, e.g. 2025-12-20T20:00:00-06:00
+  const outlookStart = '2025-12-20T20:00:00-06:00'
+  const outlookEnd = '2025-12-21T02:00:00-06:00'
+  const outlookUrl =
+    `https://outlook.live.com/calendar/0/deeplink/compose?path=/calendar/action/compose&rru=addevent` +
+    `&subject=Velada+SKToxqui+2025` +
+    `&startdt=${encodeURIComponent(outlookStart)}` +
+    `&enddt=${encodeURIComponent(outlookEnd)}` +
+    `&body=Un+evento+exclusivo+que+promete+ser+inolvidable.+Piñata,+comida,+regalos+y+mucha+diversión!` +
+    `&location=Casa+de+Martín`
+
+  // ICS file with VTIMEZONE for America/Mexico_City
+  function generateICS() {
+    return `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Velada SKToxqui//ES
+BEGIN:VTIMEZONE
+TZID:America/Mexico_City
+BEGIN:STANDARD
+DTSTART:20241027T020000
+RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU
+TZOFFSETFROM:-0500
+TZOFFSETTO:-0600
+TZNAME:CST
+END:STANDARD
+BEGIN:DAYLIGHT
+DTSTART:20240407T020000
+RRULE:FREQ=YEARLY;BYMONTH=4;BYDAY=1SU
+TZOFFSETFROM:-0600
+TZOFFSETTO:-0500
+TZNAME:CDT
+END:DAYLIGHT
+END:VTIMEZONE
+BEGIN:VEVENT
+DTSTART;TZID=America/Mexico_City:20251220T200000
+DTEND;TZID=America/Mexico_City:20251221T020000
+SUMMARY:Velada SKToxqui 2025
+DESCRIPTION:Un evento exclusivo que promete ser inolvidable. Piñata, comida, regalos y mucha diversión!
+LOCATION:Casa de Martín
+STATUS:CONFIRMED
+SEQUENCE:0
+END:VEVENT
+END:VCALENDAR`;
+  }
+
   if (status === 'loading') {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
@@ -134,19 +198,11 @@ export default function HomePage() {
                   </div>
                   <div>
                     <span className="block text-sm font-semibold uppercase tracking-wide text-amber-400">Fecha</span>
-                    <span className="text-lg font-medium">22 de Diciembre, 2025</span>
+                    <span className="text-lg font-medium">20 de Diciembre, 2025, 8:00 PM (Hora Ciudad de México)</span>
                   </div>
                 </div>
 
-                <div className="flex items-start gap-4 transition-all duration-300 hover:translate-x-2 hover:scale-105 animate-[slideLeft_0.5s_ease-out_1.1s_both]">
-                  <div className="rounded-lg bg-amber-500/20 p-2 transition-all duration-300 group-hover:rotate-12">
-                    <Clock className="h-6 w-6 text-amber-400" />
-                  </div>
-                  <div>
-                    <span className="block text-sm font-semibold uppercase tracking-wide text-amber-400">Hora</span>
-                    <span className="text-lg font-medium">Por definir</span>
-                  </div>
-                </div>
+                {/* Hora section removed */}
 
                 <div className="flex items-start gap-4 transition-all duration-300 hover:translate-x-2 hover:scale-105 animate-[slideLeft_0.5s_ease-out_1.2s_both]">
                   <div className="rounded-lg bg-amber-500/20 p-2 transition-all duration-300 group-hover:rotate-12">
@@ -154,7 +210,7 @@ export default function HomePage() {
                   </div>
                   <div>
                     <span className="block text-sm font-semibold uppercase tracking-wide text-amber-400">Ubicación</span>
-                    <span className="text-lg font-medium">Pues también por definir... a ver qué sale</span>
+                    <span className="text-lg font-medium">Casa de Martín</span>
                   </div>
                 </div>
               </div>
@@ -163,16 +219,17 @@ export default function HomePage() {
             {/* Calendar buttons with enhanced styling */}
             <div className="space-y-4 animate-[fadeIn_0.8s_ease-out_1.3s_both]">
               <p className="text-center text-sm text-zinc-300">
-                Para asegurar su asistencia, agreguen este distinguido evento a sus calendarios:
+                Para asegurar su asistencia, agreguen este distinguido evento a sus calendarios (hora de Ciudad de México):
               </p>
 
               <div className="space-y-3">
+                {/* Google Calendar */}
                 <Button
                   className="group relative w-full overflow-hidden bg-gradient-to-r from-amber-600 to-amber-500 py-6 text-base font-bold text-zinc-950 shadow-lg transition-all duration-300 hover:scale-[1.05] hover:shadow-amber-500/50 hover:shadow-2xl active:scale-[0.98] animate-[slideRight_0.5s_ease-out_1.4s_both]"
                   asChild
                 >
                   <a 
-                    href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Velada+SKToxqui+2025&dates=20251222T180000Z/20251222T230000Z&details=Un+evento+exclusivo+que+promete+ser+inolvidable.+Piñata,+comida,+regalos+y+mucha+diversión!&location=Por+definir"
+                    href={googleUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -181,12 +238,13 @@ export default function HomePage() {
                   </a>
                 </Button>
 
+                {/* Outlook Calendar */}
                 <Button
                   className="group relative w-full overflow-hidden bg-gradient-to-r from-amber-600 to-amber-500 py-6 text-base font-bold text-zinc-950 shadow-lg transition-all duration-300 hover:scale-[1.05] hover:shadow-amber-500/50 hover:shadow-2xl active:scale-[0.98] animate-[slideRight_0.5s_ease-out_1.5s_both]"
                   asChild
                 >
                   <a 
-                    href="https://outlook.live.com/calendar/0/deeplink/compose?path=/calendar/action/compose&rru=addevent&subject=Velada+SKToxqui+2025&startdt=2025-12-22T18:00:00Z&enddt=2025-12-22T23:00:00Z&body=Un+evento+exclusivo+que+promete+ser+inolvidable.+Piñata,+comida,+regalos+y+mucha+diversión!&location=Por+definir"
+                    href={outlookUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -195,12 +253,13 @@ export default function HomePage() {
                   </a>
                 </Button>
 
+                {/* Apple/iCal ICS Download - with timezone */}
                 <Button
                   className="group relative w-full overflow-hidden bg-gradient-to-r from-amber-600 to-amber-500 py-6 text-base font-bold text-zinc-950 shadow-lg transition-all duration-300 hover:scale-[1.05] hover:shadow-amber-500/50 hover:shadow-2xl active:scale-[0.98] animate-[slideRight_0.5s_ease-out_1.6s_both]"
                   asChild
                 >
                   <a 
-                    href="data:text/calendar;charset=utf-8,BEGIN:VCALENDAR%0AVERSION:2.0%0APRODID:-//Velada SKToxqui//ES%0ABEGIN:VEVENT%0ADTSTART:20251222T180000Z%0ADTEND:20251222T230000Z%0ASUMMARY:Velada SKToxqui 2025%0ADESCRIPTION:Un evento exclusivo que promete ser inolvidable. Piñata, comida, regalos y mucha diversión!%0ALOCATION:Por definir%0ASTATUS:CONFIRMED%0ASEQUENCE:0%0AEND:VEVENT%0AEND:VCALENDAR"
+                    href={`data:text/calendar;charset=utf-8,${encodeURIComponent(generateICS())}`}
                     download="velada-sktoxqui-2025.ics"
                   >
                     <span className="relative z-10">📅 DESCARGAR ARCHIVO ICS (Apple Calendar)</span>
