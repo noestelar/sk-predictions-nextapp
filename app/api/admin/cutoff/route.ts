@@ -7,7 +7,7 @@ export async function GET() {
     try {
         const session = await getServerSession(authOptions);
 
-        if (!session) {
+        if (!session || !session.user?.isAdmin) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
@@ -30,8 +30,8 @@ export async function POST(request: Request) {
         const session = await getServerSession(authOptions);
         console.log('Session:', session); // Debug log
 
-        if (!session) {
-            console.log('No session found'); // Debug log
+        if (!session || !session.user?.isAdmin) {
+            console.log('No session found or user is not admin'); // Debug log
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 

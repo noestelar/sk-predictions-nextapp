@@ -11,7 +11,7 @@ export async function GET() {
     try {
         const session = await getServerSession(authOptions);
 
-        if (!session?.user?.id) {
+        if (!session?.user?.id || !session.user?.isAdmin) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
         const results = await prisma.result.findMany({
@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
     try {
         const session = await getServerSession(authOptions);
 
-        if (!session?.user?.id) {
+        if (!session?.user?.id || !session.user?.isAdmin) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 

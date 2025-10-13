@@ -16,7 +16,7 @@ import {
 
 export default function AdminPage() {
   const router = useRouter()
-  const { status } = useSession({
+  const { data: session, status } = useSession({
     required: true,
     onUnauthenticated() {
       router.push('/')
@@ -27,6 +27,26 @@ export default function AdminPage() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <Loader2 className="h-10 w-10 animate-spin text-primary" />
+      </div>
+    )
+  }
+
+  if (!session?.user?.isAdmin) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background px-4">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle className="text-center text-destructive">Acceso Denegado</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-center text-muted-foreground">
+              No tienes permisos para acceder al panel administrativo.
+            </p>
+            <Button onClick={() => router.push('/')} className="mt-4 w-full">
+              Volver al inicio
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     )
   }

@@ -4,7 +4,7 @@ import { signIn, signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { LogIn, ChevronDown, LogOut } from 'lucide-react';
+import { LogIn, ChevronDown, LogOut, Shield } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 
 export default function Header() {
@@ -58,6 +58,16 @@ export default function Header() {
 
               {isDropdownOpen && (
                 <div className="absolute right-0 mt-2 w-48 rounded-lg bg-black border border-primary/20 shadow-lg overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+                  {session?.user?.isAdmin && (
+                    <Link
+                      href="/admin"
+                      onClick={() => setIsDropdownOpen(false)}
+                      className="w-full flex items-center gap-2 px-4 py-3 text-sm text-primary hover:bg-primary/10 transition-colors"
+                    >
+                      <Shield className="h-4 w-4" />
+                      Panel Admin
+                    </Link>
+                  )}
                   <button
                     onClick={() => {
                       setIsDropdownOpen(false);

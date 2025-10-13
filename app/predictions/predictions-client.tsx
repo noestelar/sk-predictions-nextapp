@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react'
 import { signOut } from 'next-auth/react'
 import { Participant, CutoffTime } from '@prisma/client'
 import Image from 'next/image'
-import { Clock, Gift, Sparkles, Save, X, Edit2, Loader2, ArrowRight, CheckCircle, AlertCircle, Users, ArrowLeft } from 'lucide-react'
+import { Clock, Gift, Sparkles, Save, X, Edit2, Loader2, ArrowRight, CheckCircle, AlertCircle, Users, ArrowLeft, Trash2 } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
@@ -163,6 +163,11 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
     setCurrentStep('overview')
     setCurrentGifter(null)
     setStepMessage('')
+  }
+
+  const handleClearAll = () => {
+    setEditingPredictions([])
+    setStepMessage('Todas las predicciones han sido eliminadas. Puedes empezar de nuevo.')
   }
 
   // New helper functions for step-by-step interface
@@ -623,7 +628,7 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
               <Button 
                 variant="outline" 
                 onClick={() => setCurrentStep('overview')} 
-                className="w-full sm:min-w-[200px] sm:w-auto border-primary/30 text-primary hover:bg-primary/10"
+                className="w-full sm:min-w-[200px] sm:w-auto border-primary/50 text-primary bg-primary/5 hover:bg-primary/10 hover:border-primary"
               >
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Volver
@@ -656,6 +661,14 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
                 >
                   <ArrowLeft className="mr-2 h-4 w-4" />
                   Ajustar
+                </Button>
+                <Button 
+                  variant="outline" 
+                  onClick={handleClearAll} 
+                  className="w-full sm:min-w-[200px] sm:w-auto border-orange-500/50 text-orange-400 bg-orange-500/5 hover:bg-orange-500/20 hover:border-orange-500"
+                >
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Limpiar todos
                 </Button>
                 <Button 
                   variant="outline" 
