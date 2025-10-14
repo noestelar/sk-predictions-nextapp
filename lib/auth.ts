@@ -14,6 +14,9 @@ declare module 'next-auth' {
             isAdmin?: boolean;
         }
     }
+}
+
+declare module 'next-auth/jwt' {
     interface JWT {
         id: string;
         isAdmin?: boolean;
@@ -93,7 +96,7 @@ export const authOptions: AuthOptions = {
         async session({ session, token }) {
             if (session.user) {
                 session.user.id = token.id as string;
-                session.user.isAdmin = token.isAdmin || false;
+                session.user.isAdmin = Boolean(token.isAdmin);
             }
             return session;
         },
