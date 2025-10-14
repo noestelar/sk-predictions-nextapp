@@ -86,9 +86,10 @@ INSERT INTO "Participant" ("id", "name", "profilePic") VALUES
   ('p4', 'Iris', '/avatars/iris.jpg'),
   ('p5', 'Ilse', '/avatars/ilse.jpg'),
   ('p6', 'Alex', '/avatars/alex.jpg'),
-  ('p7', 'Esteban Cesar', '/avatars/esteban.jpg'),
+  ('p7', 'Esteban', '/avatars/esteban.jpg'),
   ('p8', 'Brenda', '/avatars/brenda.jpg'),
   ('p9', 'Queso', '/avatars/queso.jpg')
+  ('p10', 'César', '/avatars/cesar.jpg'),
 ON CONFLICT (name) DO UPDATE SET
   "profilePic" = EXCLUDED."profilePic";
 

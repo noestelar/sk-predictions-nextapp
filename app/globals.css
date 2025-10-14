@@ -74,4 +74,247 @@
     @apply bg-background text-foreground antialiased;
     font-family: var(--font-cinzel-decorative), serif;
   }
+  .font-cinzel {
+    font-family: var(--font-cinzel-decorative), serif;
+  }
+  .container {
+    @apply mx-auto max-w-7xl;
+  }
+}
+
+@layer utilities {
+  /* 3D Interactive Metal Card Effect (inspired by CodePen) */
+  .metal-card-container {
+    perspective: 1000px;
+    transform-style: preserve-3d;
+  }
+
+  .metal-card {
+    position: relative;
+    transform-style: preserve-3d;
+    transform: 
+      rotateX(var(--card-rotate-x, 0deg)) 
+      rotateY(var(--card-rotate-y, 0deg));
+    transition: transform 0.1s ease-out, box-shadow 0.3s ease;
+    will-change: transform;
+  }
+
+  /* Disable 3D effect on mobile/touch devices */
+  @media (max-width: 768px) {
+    .metal-card-container {
+      perspective: none;
+    }
+
+    .metal-card {
+      transform: none !important;
+    }
+  }
+
+  @media (hover: none) {
+    .metal-card-container {
+      perspective: none;
+    }
+
+    .metal-card {
+      transform: none !important;
+    }
+  }
+
+  .metal-card-inner {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  /* Gold metal texture */
+  .metal-gold {
+    --metal-base-color: #ffcc70;
+    --gradient-angle: 0deg;
+    --gradient-x: 50%;
+    --gradient-y: 50%;
+    background: 
+      conic-gradient(
+        from var(--gradient-angle) at var(--gradient-x) var(--gradient-y),
+        rgba(255, 245, 200, 0.9) 0deg,
+        rgba(204, 158, 24, 0.7) 90deg,
+        rgba(255, 230, 140, 0.8) 180deg,
+        rgba(184, 134, 11, 0.6) 270deg,
+        rgba(255, 245, 200, 0.9) 360deg
+      ),
+      var(--metal-base-color);
+    border-color: rgba(250, 204, 21, 0.85);
+    box-shadow: 
+      inset 0 0 60px rgba(255, 230, 140, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15),
+      0 8px 32px rgba(250, 204, 21, 0.15);
+    transition: background 0.15s ease-out;
+  }
+
+  .metal-gold .metal-card-inner {
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"><filter id="n"><feTurbulence baseFrequency="0.3" numOctaves="4"/><feColorMatrix values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.08 0"/></filter><rect width="100%" height="100%" filter="url(%23n)"/></svg>');
+    mix-blend-mode: overlay;
+  }
+
+  /* Silver metal texture */
+  .metal-silver {
+    --metal-base-color: #dddde0;
+    --gradient-angle: 0deg;
+    --gradient-x: 50%;
+    --gradient-y: 50%;
+    background: 
+      conic-gradient(
+        from var(--gradient-angle) at var(--gradient-x) var(--gradient-y),
+        rgba(240, 240, 245, 0.9) 0deg,
+        rgba(148, 163, 184, 0.7) 90deg,
+        rgba(226, 232, 240, 0.8) 180deg,
+        rgba(100, 116, 139, 0.6) 270deg,
+        rgba(240, 240, 245, 0.9) 360deg
+      ),
+      var(--metal-base-color);
+    border-color: rgba(148, 163, 184, 0.85);
+    box-shadow: 
+      inset 0 0 60px rgba(226, 232, 240, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2),
+      0 8px 32px rgba(148, 163, 184, 0.18);
+    transition: background 0.15s ease-out;
+  }
+
+  .metal-silver .metal-card-inner {
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"><filter id="n"><feTurbulence baseFrequency="0.3" numOctaves="4"/><feColorMatrix values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.06 0"/></filter><rect width="100%" height="100%" filter="url(%23n)"/></svg>');
+    mix-blend-mode: overlay;
+  }
+
+  /* Bronze metal texture */
+  .metal-bronze {
+    --metal-base-color: #df9070;
+    --gradient-angle: 0deg;
+    --gradient-x: 50%;
+    --gradient-y: 50%;
+    background: 
+      conic-gradient(
+        from var(--gradient-angle) at var(--gradient-x) var(--gradient-y),
+        rgba(253, 186, 116, 0.9) 0deg,
+        rgba(146, 64, 14, 0.7) 90deg,
+        rgba(234, 144, 58, 0.8) 180deg,
+        rgba(180, 83, 9, 0.6) 270deg,
+        rgba(253, 186, 116, 0.9) 360deg
+      ),
+      var(--metal-base-color);
+    border-color: rgba(217, 119, 6, 0.85);
+    box-shadow: 
+      inset 0 0 60px rgba(234, 144, 58, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.12),
+      0 8px 32px rgba(217, 119, 6, 0.15);
+    transition: background 0.15s ease-out;
+  }
+
+  .metal-bronze .metal-card-inner {
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"><filter id="n"><feTurbulence baseFrequency="0.3" numOctaves="4"/><feColorMatrix values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.07 0"/></filter><rect width="100%" height="100%" filter="url(%23n)"/></svg>');
+    mix-blend-mode: overlay;
+  }
+
+  /* Text contrast utilities */
+  .metal-text-contrast {
+    color: #ffffff;
+  }
+
+  .text-shadow-sm {
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+  }
+
+  .text-shadow-md {
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5), 0 1px 2px rgba(0,0,0,0.3);
+  }
+
+  .badge-contrast {
+    background-color: rgba(0,0,0,0.5) !important;
+    color: #ffffff !important;
+    border-color: rgba(255,255,255,0.35) !important;
+  }
+
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideRight {
+    from {
+      opacity: 0;
+      transform: translateX(-30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes slideLeft {
+    from {
+      opacity: 0;
+      transform: translateX(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes scaleIn {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes wiggle {
+    0%, 100% {
+      transform: rotate(-3deg);
+    }
+    50% {
+      transform: rotate(3deg);
+    }
+  }
 }

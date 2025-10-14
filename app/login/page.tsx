@@ -1,6 +1,7 @@
 'use client'
 
 import { signIn } from 'next-auth/react'
+import { useMemo, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -13,6 +14,15 @@ import {
 import { Facebook } from 'lucide-react'
 
 export default function LoginPage() {
+  const devAuthEnabled = useMemo(() => {
+    if (typeof window === 'undefined') return false
+    // Expose via env at build time when available; also allow toggle by localStorage for dev
+    const fromEnv = process.env.NEXT_PUBLIC_ENABLE_DEV_AUTH === 'true'
+    const fromLs = typeof window !== 'undefined' && localStorage.getItem('ENABLE_DEV_AUTH') === 'true'
+    return fromEnv || fromLs
+  }, [])
+
+  const [devSecret, setDevSecret] = useState('')
 
   return (
     <div className="relative flex min-h-screen items-center justify-center bg-gradient-to-br from-background via-background to-muted px-4 py-16">
@@ -34,6 +44,36 @@ export default function LoginPage() {
             <Facebook className="mr-2 h-4 w-4" />
             Iniciar sesión con Facebook
           </Button>
+
+          {devAuthEnabled && (
+            <div className="mt-6 space-y-3 border-t border-border/60 pt-4">
+              <div className="text-xs text-muted-foreground">Solo desarrollo: iniciar sesión como usuario de prueba</div>
+              <div className="grid grid-cols-2 gap-2">
+                {[
+                  { name: 'Ana Tester', email: 'ana@test.local' },
+                  { name: 'Ben Tester', email: 'ben@test.local' },
+                  { name: 'Caro Tester', email: 'caro@test.local' },
+                  { name: 'Diego Tester', email: 'diego@test.local' },
+                ].map(u => (
+                  <Button key={u.email} variant="secondary" className="w-full" onClick={() => signIn('credentials', { name: u.name, email: u.email, admin: false, secret: devSecret, callbackUrl: '/predictions' })}>
+                    {u.name}
+                  </Button>
+                ))}
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <Button variant="default" className="w-full" onClick={() => signIn('credentials', { name: 'Admin Tester', email: 'admin@test.local', admin: true, secret: devSecret, callbackUrl: '/admin' })}>
+                  Admin Tester
+                </Button>
+                <input
+                  type="password"
+                  placeholder="Dev secret (opcional)"
+                  value={devSecret}
+                  onChange={(e) => setDevSecret(e.target.value)}
+                  className="w-full rounded-md border border-border/60 bg-background px-3 py-2 text-sm"
+                />
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

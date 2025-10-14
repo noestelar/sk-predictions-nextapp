@@ -21,7 +21,7 @@ export default function CutoffPage() {
   const [currentTime, setCurrentTime] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
   const router = useRouter()
-  const { status } = useSession({
+  const { data: session, status } = useSession({
     required: true,
     onUnauthenticated() {
       router.push('/')
@@ -44,6 +44,26 @@ export default function CutoffPage() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <Loader2 className="h-10 w-10 animate-spin text-primary" />
+      </div>
+    )
+  }
+
+  if (!session?.user?.isAdmin) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background px-4">
+        <Card className="w-full max-w-md border-border/60 bg-card/90 backdrop-blur">
+          <CardHeader>
+            <CardTitle className="text-center text-destructive">Acceso Denegado</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <CardDescription className="text-center">
+              No tienes permisos para acceder a esta página.
+            </CardDescription>
+            <Button onClick={() => router.push('/')} className="mt-4 w-full">
+              Volver al inicio
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     )
   }
