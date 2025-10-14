@@ -8,19 +8,6 @@ import { authOptions } from '@/lib/auth';
 
 const CACHE_TTL_SECONDS = 60;
 
-declare module 'next-auth' {
-    interface Session {
-        user: {
-            id: string;
-            name?: string | null;
-            email?: string | null;
-            image?: string | null;
-        }
-    }
-    interface JWT {
-        id: string;
-    }
-}
 
 export async function POST(req: NextRequest) {
     try {
