@@ -406,7 +406,7 @@ END:VCALENDAR`;
               <div className="pt-8">
                 <Button
                   className="w-full bg-primary py-6 text-base font-semibold text-primary-foreground transition-all hover:scale-[1.02] hover:bg-primary/90"
-                  onClick={() => router.push('/predictions')}
+                  onClick={() => router.push('/login')}
                 >
                   Ir a Predicciones
                 </Button>
