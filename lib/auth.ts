@@ -24,12 +24,17 @@ declare module 'next-auth/jwt' {
 }
 
 export const authOptions: AuthOptions = {
-    debug: false,
+    debug: true,
     adapter: PrismaAdapter(prisma),
     providers: [
+        // at top-level in the provider list
         FacebookProvider({
             clientId: process.env.FACEBOOK_CLIENT_ID!,
             clientSecret: process.env.FACEBOOK_CLIENT_SECRET!,
+            // Force a current Facebook API version (adjust to latest if needed)
+            authorization: 'https://www.facebook.com/v20.0/dialog/oauth?scope=email',
+            token: 'https://graph.facebook.com/v20.0/oauth/access_token',
+            userinfo: 'https://graph.facebook.com/v20.0/me?fields=id,name,email,picture',
             profile(profile) {
                 return {
                     id: profile.id,
@@ -115,7 +120,7 @@ export const authOptions: AuthOptions = {
                     },
                     select: { id: true, isAdmin: true }
                 });
-                
+
                 if (dbUser) {
                     token.id = dbUser.id;
                     token.isAdmin = dbUser.isAdmin || false;
