@@ -38,9 +38,11 @@ export default function Header() {
         </Link>
 
         <div className="flex items-center gap-4">
-          <Button asChild size="sm" className="gap-2 bg-primary text-black hover:bg-primary/90 font-semibold">
-            <Link href="/predictions">Predicciones</Link>
-          </Button>
+          {session?.user && (
+            <Button asChild size="sm" className="gap-2 bg-primary text-black hover:bg-primary/90 font-semibold">
+              <Link href="/predictions">Predicciones</Link>
+            </Button>
+          )}
           {status === 'loading' ? (
             <div className="h-10 w-10 animate-pulse rounded-full bg-primary/20"></div>
           ) : session?.user ? (
