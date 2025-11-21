@@ -274,7 +274,7 @@ END:VCALENDAR`;
           <div className="text-center pb-12">
             <div className="mb-8 inline-block rounded-full border border-amber-500/20 bg-amber-500/5 px-6 py-3 backdrop-blur-md">
               <p className="text-sm italic text-amber-200/80">
-                "Prepárense para una velada de elegancia y distinción..."
+                &quot;Prepárense para una velada de elegancia y distinción...&quot;
               </p>
             </div>
 
