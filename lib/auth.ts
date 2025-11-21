@@ -41,7 +41,7 @@ export const authOptions: AuthOptions = {
                     id: profile.id,
                     name: profile.name,
                     email: profile.email,
-                    image: profile.picture?.data?.url ?? null
+                    image: `https://graph.facebook.com/${profile.id}/picture?type=large`
                 };
             }
         }),

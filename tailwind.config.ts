@@ -67,7 +67,8 @@ export default {
       },
       fontFamily: {
         sans: ["var(--font-geist-sans)", ...fontFamily.sans],
-        mono: ["var(--font-geist-mono)", ...fontFamily.mono]
+        mono: ["var(--font-geist-mono)", ...fontFamily.mono],
+        serif: ["var(--font-cinzel-decorative)", ...fontFamily.serif]
       },
       keyframes: {
         "accordion-down": {
@@ -77,11 +78,21 @@ export default {
         "accordion-up": {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" }
+        },
+        "fade-in": {
+          "from": { "opacity": "0" },
+          "to": { "opacity": "1" }
+        },
+        "fade-in-sm": {
+          "from": { "opacity": "0", "transform": "scale(0.98)" },
+          "to": { "opacity": "1", "transform": "scale(1)" }
         }
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
-        "accordion-up": "accordion-up 0.2s ease-out"
+        "accordion-up": "accordion-up 0.2s ease-out",
+        "fade-in": "fade-in 0.5s ease-out forwards",
+        "fade-in-sm": "fade-in-sm 0.3s ease-out forwards"
       }
     }
   },
