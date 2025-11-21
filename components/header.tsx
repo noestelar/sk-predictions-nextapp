@@ -4,12 +4,13 @@ import { signIn, signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { LogIn, ChevronDown, LogOut, Shield } from 'lucide-react';
+import { LogIn, ChevronDown, LogOut, Shield, User } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 
 export default function Header() {
   const { data: session, status } = useSession();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [imageError, setImageError] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -22,6 +23,11 @@ export default function Header() {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  // Reset image error when session changes
+  useEffect(() => {
+    setImageError(false);
+  }, [session?.user?.image]);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-primary/20 bg-black backdrop-blur">
@@ -51,14 +57,20 @@ export default function Header() {
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 className="flex items-center gap-2 rounded-full bg-primary/10 hover:bg-primary/20 transition-colors p-1 pr-3"
               >
-                {session.user.image && (
+                {session.user.image && !imageError ? (
                   <Image
                     src={session.user.image}
                     alt={session.user.name || 'User'}
                     width={36}
                     height={36}
                     className="rounded-full ring-2 ring-primary/30"
+                    onError={() => setImageError(true)}
+                    unoptimized
                   />
+                ) : (
+                  <div className="w-9 h-9 rounded-full bg-primary/20 flex items-center justify-center ring-2 ring-primary/30">
+                    <User className="h-5 w-5 text-primary" />
+                  </div>
                 )}
                 <span className="text-sm font-medium text-primary hidden sm:inline-block">
                   {session.user.name}

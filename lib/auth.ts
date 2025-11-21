@@ -31,11 +31,12 @@ export const authOptions: AuthOptions = {
         FacebookProvider({
             clientId: process.env.FACEBOOK_CLIENT_ID!,
             clientSecret: process.env.FACEBOOK_CLIENT_SECRET!,
-            // Force a current Facebook API version (adjust to latest if needed)
-            authorization: 'https://www.facebook.com/v20.0/dialog/oauth?scope=email',
-            token: 'https://graph.facebook.com/v20.0/oauth/access_token',
-            userinfo: 'https://graph.facebook.com/v20.0/me?fields=id,name,email,picture',
+            // Use the latest Facebook API version
+            authorization: 'https://www.facebook.com/v21.0/dialog/oauth?scope=email',
+            token: 'https://graph.facebook.com/v21.0/oauth/access_token',
+            userinfo: 'https://graph.facebook.com/v21.0/me?fields=id,name,email,picture.type(large)',
             profile(profile) {
+                console.log('Facebook profile data:', profile);
                 return {
                     id: profile.id,
                     name: profile.name,
@@ -72,18 +73,21 @@ export const authOptions: AuthOptions = {
 
                         // Create or update the user for dev sign-in
                         let user;
+                        // Generate a simple avatar URL for dev users
+                        const devAvatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(rawName || 'Dev User')}&background=d4af37&color=000&size=128`;
+                        
                         if (rawEmail) {
                             user = await prisma.user.upsert({
                                 where: { email: rawEmail },
-                                create: { email: rawEmail, name: rawName ?? null, isAdmin: wantsAdmin },
-                                update: { name: rawName ?? undefined, isAdmin: wantsAdmin },
+                                create: { email: rawEmail, name: rawName ?? null, isAdmin: wantsAdmin, image: devAvatarUrl },
+                                update: { name: rawName ?? undefined, isAdmin: wantsAdmin, image: devAvatarUrl },
                             });
                         } else {
                             // No email provided, fall back to unique name
                             user = await prisma.user.upsert({
                                 where: { name: rawName! },
-                                create: { name: rawName!, isAdmin: wantsAdmin },
-                                update: { isAdmin: wantsAdmin },
+                                create: { name: rawName!, isAdmin: wantsAdmin, image: devAvatarUrl },
+                                update: { isAdmin: wantsAdmin, image: devAvatarUrl },
                             });
                         }
 
@@ -102,7 +106,23 @@ export const authOptions: AuthOptions = {
             if (session.user) {
                 session.user.id = token.id as string;
                 session.user.isAdmin = Boolean(token.isAdmin);
+                
+                // Ensure we have the latest user data including image
+                if (token.id) {
+                    try {
+                        const dbUser = await prisma.user.findUnique({
+                            where: { id: token.id as string },
+                            select: { image: true }
+                        });
+                        if (dbUser?.image && !session.user.image) {
+                            session.user.image = dbUser.image;
+                        }
+                    } catch (error) {
+                        console.error('Error fetching user image in session callback:', error);
+                    }
+                }
             }
+            console.log('Session callback - final session:', session);
             return session;
         },
         async jwt({ token, user, account }) {

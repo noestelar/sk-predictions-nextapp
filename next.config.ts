@@ -18,7 +18,29 @@ const nextConfig: NextConfig = {
         hostname: 'graph.facebook.com',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'scontent-*.fna.fbcdn.net',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.fbcdn.net',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'lookaside.fbsbx.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'ui-avatars.com',
+        pathname: '/api/**',
+      },
     ],
+    dangerouslyAllowSVG: false,
+    minimumCacheTTL: 60,
   },
 };
 
