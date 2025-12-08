@@ -204,77 +204,66 @@ END:VCALENDAR`;
                 </span>
               </p>
               
-              {/* Wishlist Button */}
-              <div className="pt-2 animate-[slideRight_0.6s_ease-out_0.8s_both] flex flex-col sm:flex-row gap-4">
-                <Button
-                  className="group relative w-full overflow-hidden bg-gradient-to-r from-purple-600 to-pink-600 py-4 text-base font-bold text-white shadow-lg transition-all duration-300 hover:scale-[1.05] hover:shadow-purple-500/50 hover:shadow-2xl active:scale-[0.98]"
-                  asChild
-                >
-                  <a 
-                    href="https://www.notion.so/noerl/Wishlist-Reuni-n-28276c7ee2d9808fa902f6b3a6e5f398?source=copy_link"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <span className="relative z-10 inline-flex items-center gap-2">
-                      <span className="animate-[wiggle_1s_ease-in-out_infinite]">✨</span>
-                      VER WISHLIST EN NOTION
-                    </span>
-                    <div className="absolute inset-0 -z-0 bg-gradient-to-r from-pink-600 to-purple-600 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                  </a>
-                </Button>
+              {/* Wishlist Button - Moved to bottom */}
 
-                <SantaChat 
-                  className="w-full"
-                  trigger={
-                    <Button
-                      className="group relative w-full overflow-hidden bg-gradient-to-r from-red-600 to-red-500 py-4 text-base font-bold text-white shadow-lg transition-all duration-300 hover:scale-[1.05] hover:shadow-red-500/50 hover:shadow-2xl active:scale-[0.98]"
-                    >
-                      <span className="relative z-10 inline-flex items-center gap-2">
-                        <span className="animate-[bounce_2s_ease-in-out_infinite]">🎅</span>
-                        PREGÚNTALE A SANTA
-                      </span>
-                      <div className="absolute inset-0 -z-0 bg-gradient-to-r from-red-500 to-red-400 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                    </Button>
-                  }
-                />
-              </div>
-
-                <div className="flex flex-col items-center justify-center gap-6 md:flex-row md:gap-12">
+                <div className="flex flex-col items-center justify-center gap-6 md:flex-row md:gap-12 my-8">
                   <div className="flex items-center gap-3 text-left">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-amber-900/10 border border-amber-900/20">
-                      <Calendar className="h-6 w-6 text-amber-900" />
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-amber-500/10 border border-amber-500/20">
+                      <Calendar className="h-6 w-6 text-amber-500" />
                     </div>
                     <div>
-                      <p className="text-xs uppercase tracking-wider text-amber-900/60 font-semibold">Fecha</p>
-                      <p className="font-medium text-zinc-900">20 de Diciembre, 2025</p>
-                      <p className="text-sm text-zinc-800">8:00 PM</p>
+                      <p className="text-xs uppercase tracking-wider text-amber-200/60 font-semibold">Fecha</p>
+                      <p className="font-medium text-zinc-100">20 de Diciembre, 2025</p>
+                      <p className="text-sm text-zinc-400">8:00 PM</p>
                     </div>
                   </div>
 
-                  <div className="h-px w-full bg-amber-900/20 md:h-12 md:w-px" />
+                  <div className="h-px w-full bg-amber-500/20 md:h-12 md:w-px" />
 
                   <div className="flex items-center gap-3 text-left">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-amber-900/10 border border-amber-900/20">
-                      <MapPin className="h-6 w-6 text-amber-900" />
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-amber-500/10 border border-amber-500/20">
+                      <MapPin className="h-6 w-6 text-amber-500" />
                     </div>
                     <div>
-                      <p className="text-xs uppercase tracking-wider text-amber-900/60 font-semibold">Ubicación</p>
-                      <p className="font-medium text-zinc-900">Casa de Martín</p>
-                      <p className="text-sm text-zinc-800">Acceso Exclusivo</p>
+                      <p className="text-xs uppercase tracking-wider text-amber-200/60 font-semibold">Ubicación</p>
+                      <p className="font-medium text-zinc-100">Casa de Martín</p>
+                      <p className="text-sm text-zinc-400">Acceso Exclusivo</p>
                     </div>
                   </div>
                 </div>
 
-                <div className="pt-6">
+                <div className="pt-6 flex flex-col sm:flex-row gap-4">
                   <Button
+                    className="group relative w-full overflow-hidden bg-gradient-to-r from-purple-600 to-pink-600 py-4 text-base font-bold text-white shadow-lg transition-all duration-300 hover:scale-[1.05] hover:shadow-purple-500/50 hover:shadow-2xl active:scale-[0.98]"
                     asChild
-                    className="relative h-auto overflow-hidden rounded-full bg-gradient-to-r from-amber-600 to-yellow-500 px-8 py-4 text-lg font-bold text-zinc-950 shadow-[0_0_20px_rgba(251,191,36,0.3)] transition-all hover:scale-105 hover:shadow-[0_0_30px_rgba(251,191,36,0.5)]"
                   >
-                    <a href="https://www.notion.so/noerl/Wishlist-Reuni-n-28276c7ee2d9808fa902f6b3a6e5f398?source=copy_link" target="_blank" rel="noopener noreferrer">
-                      <Sparkles className="mr-2 h-5 w-5 animate-pulse" />
-                      VER WISHLIST OFICIAL
+                    <a 
+                      href="https://www.notion.so/noerl/Wishlist-Reuni-n-28276c7ee2d9808fa902f6b3a6e5f398?source=copy_link"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <span className="relative z-10 inline-flex items-center gap-2">
+                        <span className="animate-[wiggle_1s_ease-in-out_infinite]">✨</span>
+                        VER WISHLIST EN NOTION
+                      </span>
+                      <div className="absolute inset-0 -z-0 bg-gradient-to-r from-pink-600 to-purple-600 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                     </a>
                   </Button>
+
+                  <SantaChat 
+                    className="w-full"
+                    trigger={
+                      <Button
+                        className="group relative w-full overflow-hidden bg-gradient-to-r from-red-600 to-red-500 py-4 text-base font-bold text-white shadow-lg transition-all duration-300 hover:scale-[1.05] hover:shadow-red-500/50 hover:shadow-2xl active:scale-[0.98]"
+                      >
+                        <span className="relative z-10 inline-flex items-center gap-2">
+                          <span className="animate-[bounce_2s_ease-in-out_infinite]">🎅</span>
+                          PREGÚNTALE A SANTA
+                        </span>
+                        <div className="absolute inset-0 -z-0 bg-gradient-to-r from-red-500 to-red-400 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                      </Button>
+                    }
+                  />
                 </div>
             </div>
           </div>
