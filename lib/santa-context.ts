@@ -50,9 +50,22 @@ export const getWishlistContext = async () => {
     try {
       console.log(`[Notion] Attempting to query ID ${pageId} as a database...`);
       
-      const dbResponse = await notion.databases.query({
-        database_id: pageId,
+      // Manual fetch because SDK seems to be missing query method in this version
+      const response = await fetch(`https://api.notion.com/v1/databases/${pageId}/query`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Notion-Version': '2022-06-28',
+          'Content-Type': 'application/json'
+        }
       });
+      
+      if (!response.ok) {
+        // If it's not a database, this might fail with 400 or 404, which is handled by the catch block
+        throw new Error(`Notion API error: ${response.status} ${response.statusText}`);
+      }
+      
+      const dbResponse = await response.json();
       console.log(`[Notion] Direct database query found ${dbResponse.results.length} items.`);
       
       if (dbResponse.results.length > 0) {
@@ -117,8 +130,8 @@ export const getWishlistContext = async () => {
           // OR, manually construct the request if the SDK is broken.
           
           let childDb;
-          if (childNotion.databases && typeof childNotion.databases.query === 'function') {
-             childDb = await childNotion.databases.query({ database_id: block.id });
+          if (childNotion.databases && typeof (childNotion.databases as any).query === 'function') {
+             childDb = await (childNotion.databases as any).query({ database_id: block.id });
           } else {
              console.warn('[Notion] SDK broken, falling back to manual fetch for child DB');
              // Manual fetch fallback
