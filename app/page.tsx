@@ -184,18 +184,18 @@ END:VCALENDAR`;
             <div className="metal-card metal-gold relative overflow-hidden rounded-2xl border border-amber-500/20 bg-zinc-900/90 p-8 shadow-2xl md:p-12">
               <div className="metal-card-inner" />
 
-              <p className="text-base leading-relaxed">
+              <p className="text-base leading-relaxed text-amber-950">
                 Nos complace extenderles una cordial invitación a la{' '}
-                <span className="font-bold text-amber-400">Velada SKToxqui 2025</span>,
+                <span className="font-bold text-red-700">Velada SKToxqui 2025</span>,
                 un evento exclusivo que promete ser inolvidable. Empezando por, nuestra tradicional
                 Wishlist, están cordialmente invitados a la planeación, donde elegiremos el día del evento, la comida y
-                haremos el llenado de la wishlist. 
+                haremos el llenado de la wishlist.
                 Que será llevada a cabo en{' '}
                 <span className="text-lg font-medium">
                   nuestro selecto canal de{' '}
                   <a
                     href="https://discord.com/channels/188896334424702977/897672392405557278"
-                    className="text-amber-300 underline decoration-amber-400/40 transition-all hover:text-amber-200 hover:decoration-amber-400"
+                    className="text-red-700 underline decoration-red-700/60 transition-all hover:text-red-800 hover:decoration-red-800"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -208,26 +208,26 @@ END:VCALENDAR`;
 
                 <div className="flex flex-col items-center justify-center gap-6 md:flex-row md:gap-12 my-8">
                   <div className="flex items-center gap-3 text-left">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-amber-500/10 border border-amber-500/20">
-                      <Calendar className="h-6 w-6 text-amber-500" />
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-amber-800/20 border border-amber-700/40">
+                      <Calendar className="h-6 w-6 text-amber-800" />
                     </div>
                     <div>
-                      <p className="text-xs uppercase tracking-wider text-amber-200/60 font-semibold">Fecha</p>
-                      <p className="font-medium text-zinc-100">20 de Diciembre, 2025</p>
-                      <p className="text-sm text-zinc-400">8:00 PM</p>
+                      <p className="text-xs uppercase tracking-wider text-amber-800/70 font-semibold">Fecha</p>
+                      <p className="font-medium text-amber-950">20 de Diciembre, 2025</p>
+                      <p className="text-sm text-amber-900/70">8:00 PM</p>
                     </div>
                   </div>
 
-                  <div className="h-px w-full bg-amber-500/20 md:h-12 md:w-px" />
+                  <div className="h-px w-full bg-amber-700/30 md:h-12 md:w-px" />
 
                   <div className="flex items-center gap-3 text-left">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-amber-500/10 border border-amber-500/20">
-                      <MapPin className="h-6 w-6 text-amber-500" />
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-amber-800/20 border border-amber-700/40">
+                      <MapPin className="h-6 w-6 text-amber-800" />
                     </div>
                     <div>
-                      <p className="text-xs uppercase tracking-wider text-amber-200/60 font-semibold">Ubicación</p>
-                      <p className="font-medium text-zinc-100">Casa de Martín</p>
-                      <p className="text-sm text-zinc-400">Acceso Exclusivo</p>
+                      <p className="text-xs uppercase tracking-wider text-amber-800/70 font-semibold">Ubicación</p>
+                      <p className="font-medium text-amber-950">Casa de Martín</p>
+                      <p className="text-sm text-amber-900/70">Acceso Exclusivo</p>
                     </div>
                   </div>
                 </div>
