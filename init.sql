@@ -52,7 +52,8 @@ CREATE TABLE "VerificationToken" (
 CREATE TABLE "Participant" (
   "id" TEXT NOT NULL PRIMARY KEY,
   "name" TEXT NOT NULL UNIQUE,
-  "profilePic" TEXT NOT NULL
+  "profilePic" TEXT NOT NULL,
+  "description" TEXT
 );
 
 CREATE TABLE "predictions" (

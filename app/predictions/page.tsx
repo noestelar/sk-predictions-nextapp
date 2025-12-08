@@ -12,6 +12,7 @@ async function ParticipantsList() {
   const cutoffTime = await prisma.cutoffTime.findFirst({
     orderBy: { createdAt: 'desc' },
   });
+  const resultsCount = await prisma.result.count();
 
   const now = new Date();
   const isPastCutoff = cutoffTime && new Date(cutoffTime.datetime) < now;
@@ -21,6 +22,7 @@ async function ParticipantsList() {
       participants={participants}
       cutoffTime={cutoffTime}
       isPastCutoff={isPastCutoff || false}
+      hasWinners={resultsCount > 0}
     />
   );
 }

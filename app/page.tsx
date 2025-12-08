@@ -1,12 +1,58 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { Calendar, Clock, MapPin, Sparkles, Loader2, Star, PartyPopper, UtensilsCrossed, Gift, Zap } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
+import SantaChat from '@/components/SantaChat'
+
+function Countdown({ targetDate }: { targetDate: string }) {
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 })
+
+  useEffect(() => {
+    const calculateTimeLeft = () => {
+      const difference = +new Date(targetDate) - +new Date()
+      
+      if (difference > 0) {
+        setTimeLeft({
+          days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+          hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+          minutes: Math.floor((difference / 1000 / 60) % 60),
+          seconds: Math.floor((difference / 1000) % 60),
+        })
+      }
+    }
+
+    calculateTimeLeft()
+    const timer = setInterval(calculateTimeLeft, 1000)
+
+    return () => clearInterval(timer)
+  }, [targetDate])
+
+  return (
+    <div className="grid grid-cols-4 gap-3 sm:gap-4 text-center">
+      <div className="flex flex-col items-center justify-center rounded-lg bg-amber-500/10 p-2 sm:p-3 border border-amber-500/20 backdrop-blur-sm min-w-[70px] sm:min-w-[80px]">
+        <span className="text-2xl sm:text-3xl font-bold text-amber-400 tabular-nums">{timeLeft.days}</span>
+        <span className="text-[10px] sm:text-xs uppercase tracking-wider text-amber-200/70">Días</span>
+      </div>
+      <div className="flex flex-col items-center justify-center rounded-lg bg-amber-500/10 p-2 sm:p-3 border border-amber-500/20 backdrop-blur-sm min-w-[70px] sm:min-w-[80px]">
+        <span className="text-2xl sm:text-3xl font-bold text-amber-400 tabular-nums">{timeLeft.hours}</span>
+        <span className="text-[10px] sm:text-xs uppercase tracking-wider text-amber-200/70">Hrs</span>
+      </div>
+      <div className="flex flex-col items-center justify-center rounded-lg bg-amber-500/10 p-2 sm:p-3 border border-amber-500/20 backdrop-blur-sm min-w-[70px] sm:min-w-[80px]">
+        <span className="text-2xl sm:text-3xl font-bold text-amber-400 tabular-nums">{timeLeft.minutes}</span>
+        <span className="text-[10px] sm:text-xs uppercase tracking-wider text-amber-200/70">Min</span>
+      </div>
+      <div className="flex flex-col items-center justify-center rounded-lg bg-amber-500/10 p-2 sm:p-3 border border-amber-500/20 backdrop-blur-sm min-w-[70px] sm:min-w-[80px]">
+        <span className="text-2xl sm:text-3xl font-bold text-amber-400 tabular-nums">{timeLeft.seconds}</span>
+        <span className="text-[10px] sm:text-xs uppercase tracking-wider text-amber-200/70">Seg</span>
+      </div>
+    </div>
+  )
+}
 
 export default function HomePage() {
   const { status } = useSession()
@@ -137,6 +183,10 @@ END:VCALENDAR`;
           <div className="inline-block rounded-full border-2 border-amber-500/50 bg-amber-500/10 px-6 py-2 backdrop-blur-sm animate-[fadeIn_1s_ease-out_0.5s_both]">
             <span className="text-2xl font-bold text-amber-300">2025</span>
           </div>
+
+          <div className="mt-8 flex justify-center animate-[fadeIn_1s_ease-out_0.7s_both]">
+            <Countdown targetDate="2025-12-20T20:00:00-06:00" />
+          </div>
         </div>
 
         {/* Main content card with enhanced styling */}
@@ -169,7 +219,7 @@ END:VCALENDAR`;
               </p>
               
               {/* Wishlist Button */}
-              <div className="pt-2 animate-[slideRight_0.6s_ease-out_0.8s_both]">
+              <div className="pt-2 animate-[slideRight_0.6s_ease-out_0.8s_both] flex flex-col sm:flex-row gap-4">
                 <Button
                   className="group relative w-full overflow-hidden bg-gradient-to-r from-purple-600 to-pink-600 py-4 text-base font-bold text-white shadow-lg transition-all duration-300 hover:scale-[1.05] hover:shadow-purple-500/50 hover:shadow-2xl active:scale-[0.98]"
                   asChild
@@ -186,6 +236,21 @@ END:VCALENDAR`;
                     <div className="absolute inset-0 -z-0 bg-gradient-to-r from-pink-600 to-purple-600 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                   </a>
                 </Button>
+
+                <SantaChat 
+                  className="w-full"
+                  trigger={
+                    <Button
+                      className="group relative w-full overflow-hidden bg-gradient-to-r from-red-600 to-red-500 py-4 text-base font-bold text-white shadow-lg transition-all duration-300 hover:scale-[1.05] hover:shadow-red-500/50 hover:shadow-2xl active:scale-[0.98]"
+                    >
+                      <span className="relative z-10 inline-flex items-center gap-2">
+                        <span className="animate-[bounce_2s_ease-in-out_infinite]">🎅</span>
+                        PREGÚNTALE A SANTA
+                      </span>
+                      <div className="absolute inset-0 -z-0 bg-gradient-to-r from-red-500 to-red-400 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                    </Button>
+                  }
+                />
               </div>
             </div>
 

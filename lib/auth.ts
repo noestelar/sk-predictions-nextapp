@@ -79,7 +79,13 @@ export const authOptions: AuthOptions = {
                             });
                         }
 
-                        return { id: user.id, name: user.name, email: user.email, image: user.image } as any;
+                        return { 
+                            id: user.id, 
+                            name: user.name, 
+                            email: user.email, 
+                            image: user.image,
+                            isAdmin: user.isAdmin 
+                        } as any;
                     },
                 })
             ]
@@ -98,37 +104,9 @@ export const authOptions: AuthOptions = {
             return session;
         },
         async jwt({ token, user, account }) {
-            if (user && account) {
-                // Initial sign in - user object contains the provider ID
-                // We need to find the actual database user
-                const dbUser = await prisma.user.findFirst({
-                    where: {
-                        accounts: {
-                            some: {
-                                provider: account.provider,
-                                providerAccountId: user.id
-                            }
-                        }
-                    },
-                    select: { id: true, isAdmin: true }
-                });
-                
-                if (dbUser) {
-                    token.id = dbUser.id;
-                    token.isAdmin = dbUser.isAdmin || false;
-                } else {
-                    // Fallback: try to find by email if available
-                    if (user.email) {
-                        const dbUserByEmail = await prisma.user.findUnique({
-                            where: { email: user.email },
-                            select: { id: true, isAdmin: true }
-                        });
-                        if (dbUserByEmail) {
-                            token.id = dbUserByEmail.id;
-                            token.isAdmin = dbUserByEmail.isAdmin || false;
-                        }
-                    }
-                }
+            if (user) {
+                token.id = user.id;
+                token.isAdmin = (user as any).isAdmin || false;
             }
             return token;
         },
