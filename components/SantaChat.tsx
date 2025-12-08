@@ -220,7 +220,7 @@ export default function SantaChat({ trigger, className }: SantaChatProps) {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="Pregúntale a Santa..."
-                  className="flex-1 rounded-full bg-zinc-800 px-4 py-2 text-sm text-zinc-100 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-red-500/50 border border-zinc-700"
+                  className="flex-1 rounded-full bg-zinc-800 px-4 py-2 text-base sm:text-sm text-zinc-100 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-red-500/50 border border-zinc-700"
                   disabled={isLoading}
                 />
                 <Button 
