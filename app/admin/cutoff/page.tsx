@@ -173,7 +173,7 @@ export default function CutoffPage() {
                   className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
                 />
                 <label htmlFor="showWinners" className="text-sm font-medium text-muted-foreground">
-                  Mostrar botón "Ver ganadores" (activar solo cuando haya ganadores registrados)
+                  Mostrar botón &quot;Ver ganadores&quot; (activar solo cuando haya ganadores registrados)
                 </label>
               </div>
 

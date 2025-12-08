@@ -19,13 +19,9 @@ import {
 import { cn } from '@/lib/utils'
 import SantaChat from '@/components/SantaChat'
 
-interface ExtendedCutoffTime extends CutoffTime {
-  showWinners?: boolean
-}
-
 interface PredictionsClientProps {
   participants: Participant[]
-  cutoffTime: ExtendedCutoffTime | null
+  cutoffTime: CutoffTime | null
   isPastCutoff: boolean
   hasWinners: boolean
 }
