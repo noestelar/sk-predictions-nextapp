@@ -17,6 +17,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 
 export default function CutoffPage() {
   const [cutoffDate, setCutoffDate] = useState('')
+  const [showWinners, setShowWinners] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [currentTime, setCurrentTime] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
@@ -27,6 +28,33 @@ export default function CutoffPage() {
       router.push('/')
     }
   })
+
+  useEffect(() => {
+    const fetchCurrentSettings = async () => {
+      try {
+        const res = await fetch('/api/admin/cutoff')
+        if (res.ok) {
+          const data = await res.json()
+          if (data.cutoffTime) {
+            // Format datetime for input type="datetime-local"
+            // The format required is YYYY-MM-DDThh:mm
+            const date = new Date(data.cutoffTime.datetime)
+            // Adjust for local timezone offset
+            const offset = date.getTimezoneOffset() * 60000
+            const localISOTime = (new Date(date.getTime() - offset)).toISOString().slice(0, 16)
+            setCutoffDate(localISOTime)
+            setShowWinners(data.cutoffTime.showWinners || false)
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching current settings:', error)
+      }
+    }
+
+    if (status === 'authenticated') {
+      fetchCurrentSettings()
+    }
+  }, [status])
 
   useEffect(() => {
     const updateTime = () => {
@@ -81,7 +109,7 @@ export default function CutoffPage() {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ datetime: cutoffDate }),
+        body: JSON.stringify({ datetime: cutoffDate, showWinners }),
         credentials: 'include'
       })
 
@@ -135,6 +163,20 @@ export default function CutoffPage() {
                   className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 />
               </div>
+
+              <div className="flex items-center space-x-2">
+                <input
+                  id="showWinners"
+                  type="checkbox"
+                  checked={showWinners}
+                  onChange={(e) => setShowWinners(e.target.checked)}
+                  className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                />
+                <label htmlFor="showWinners" className="text-sm font-medium text-muted-foreground">
+                  Mostrar botón "Ver ganadores" (activar solo cuando haya ganadores registrados)
+                </label>
+              </div>
+
               <Button type="submit" className="w-full" disabled={isSubmitting || status !== 'authenticated'}>
                 {isSubmitting ? (
                   <>

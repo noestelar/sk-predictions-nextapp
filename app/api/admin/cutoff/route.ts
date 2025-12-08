@@ -38,7 +38,7 @@ export async function POST(request: Request) {
         const body = await request.json();
         console.log('Request body:', body); // Debug log
 
-        const { datetime } = body;
+        const { datetime, showWinners } = body;
         if (!datetime) {
             console.log('No datetime provided'); // Debug log
             return NextResponse.json(
@@ -57,10 +57,11 @@ export async function POST(request: Request) {
                 );
             }
 
-            console.log('Creating cutoff time with date:', date); // Debug log
+            console.log('Creating cutoff time with date:', date, 'showWinners:', showWinners); // Debug log
             const cutoffTime = await prisma.cutoffTime.create({
                 data: {
                     datetime: date,
+                    showWinners: showWinners || false,
                 },
             });
             console.log('Created cutoff time:', cutoffTime); // Debug log
