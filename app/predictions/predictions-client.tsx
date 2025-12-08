@@ -17,11 +17,17 @@ import {
   CardTitle
 } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
+import SantaChat from '@/components/SantaChat'
+
+interface ExtendedCutoffTime extends CutoffTime {
+  showWinners?: boolean
+}
 
 interface PredictionsClientProps {
   participants: Participant[]
-  cutoffTime: CutoffTime | null
+  cutoffTime: ExtendedCutoffTime | null
   isPastCutoff: boolean
+  hasWinners: boolean
 }
 
 interface Prediction {
@@ -29,7 +35,7 @@ interface Prediction {
   participantIdGiftee: string
 }
 
-export default function PredictionsClient({ participants, cutoffTime, isPastCutoff }: PredictionsClientProps) {
+export default function PredictionsClient({ participants, cutoffTime, isPastCutoff, hasWinners }: PredictionsClientProps) {
   const [predictions, setPredictions] = useState<string[][]>([])
   const [isEditing, setIsEditing] = useState(false)
   const [editingPredictions, setEditingPredictions] = useState<string[][]>([])
@@ -48,8 +54,16 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
     async function fetchPredictions() {
       try {
         const res = await fetch('/api/predictions')
+        
+        if (res.status === 401) {
+          // User session might have expired or is invalid
+          setStepMessage('Tu sesión ha expirado. Por favor recarga la página o inicia sesión nuevamente.')
+          setIsLoading(false)
+          return
+        }
+
         if (!res.ok) {
-          throw new Error('Error al obtener predicciones')
+          throw new Error(`Error al obtener predicciones: ${res.status} ${res.statusText}`)
         }
         const data = await res.json()
         const existingPredictions = data.predictions.map((p: Prediction) => [p.participantIdGifter, p.participantIdGiftee])
@@ -300,16 +314,28 @@ export default function PredictionsClient({ participants, cutoffTime, isPastCuto
               </div>
             )}
           </div>
+          
+          <SantaChat 
+            trigger={
+              <Button className="gap-2 bg-red-600 hover:bg-red-700 text-white border border-red-500/50 shadow-lg shadow-red-900/20">
+                <Gift className="h-4 w-4 animate-bounce" />
+                <span className="hidden sm:inline">Pregúntale a Santa</span>
+                <span className="sm:hidden">Santa</span>
+              </Button>
+            }
+          />
         </div>
 
         {isPastCutoff && (
           <Alert variant="destructive" className="bg-red-950/30 border-red-500/20">
             <AlertTitle className="text-red-400">Predicciones cerradas</AlertTitle>
             <AlertDescription className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between text-red-300">
-              <span>El tiempo límite ha pasado. Puedes consultar a los ganadores.</span>
-              <Button asChild className="bg-primary text-black hover:bg-primary/90 font-semibold" size="sm">
-                <a href="/winners">Ver ganadores</a>
-              </Button>
+              <span>El tiempo límite ha pasado. {cutoffTime?.showWinners && hasWinners ? 'Puedes consultar a los ganadores.' : 'Los ganadores se anunciarán pronto.'}</span>
+              {cutoffTime?.showWinners && hasWinners && (
+                <Button asChild className="bg-primary text-black hover:bg-primary/90 font-semibold" size="sm">
+                  <a href="/winners">Ver ganadores</a>
+                </Button>
+              )}
             </AlertDescription>
           </Alert>
         )}
