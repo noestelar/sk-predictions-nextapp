@@ -1,10 +1,10 @@
 import { execSync } from 'child_process';
 
 // Get the production URL from environment
-const prodDbUrl = process.env.DATABASE_URL;
+const prodDbUrl = process.env.DATABASE_POSTGRES_URL_NON_POOLING || process.env.DATABASE_URL;
 
 if (!prodDbUrl) {
-  console.error('Error: DATABASE_URL environment variable is not set');
+  console.error('Error: DATABASE_POSTGRES_URL_NON_POOLING or DATABASE_URL environment variable is not set');
   process.exit(1);
 }
 
