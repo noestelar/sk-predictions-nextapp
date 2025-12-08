@@ -227,7 +227,7 @@ export async function POST(req: Request) {
               await writer.write(encoder.encode(`data: ${JSON.stringify({ content: cleanContent })}\n\n`));
             }
           } else if (chunk.type === 'tool_calls') {
-            toolCallsToExecute = chunk.toolCalls;
+            toolCallsToExecute = chunk.toolCalls ?? null;
           }
         }
 
