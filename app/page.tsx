@@ -238,7 +238,6 @@ END:VCALENDAR`;
                   }
                 />
               </div>
-            </div>
 
                 <div className="flex flex-col items-center justify-center gap-6 md:flex-row md:gap-12">
                   <div className="flex items-center gap-3 text-left">
@@ -277,7 +276,6 @@ END:VCALENDAR`;
                     </a>
                   </Button>
                 </div>
-              </div>
             </div>
           </div>
 
