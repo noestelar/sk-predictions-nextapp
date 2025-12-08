@@ -54,15 +54,65 @@ export default function SantaChat({ trigger, className }: SantaChatProps) {
       const response = await fetch('/api/chat/santa', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          messages: [...messages, userMessage].filter(m => m.role !== 'system') 
+        body: JSON.stringify({
+          messages: [...messages, userMessage].filter(m => m.role !== 'system')
         })
       })
 
       if (!response.ok) throw new Error('Error fetching response')
 
-      const data = await response.json()
-      setMessages(prev => [...prev, { role: 'assistant', content: data.content }])
+      // Check if streaming response (SSE) or JSON fallback
+      const contentType = response.headers.get('content-type')
+
+      if (contentType?.includes('text/event-stream')) {
+        // Handle streaming response
+        const reader = response.body?.getReader()
+        if (!reader) throw new Error('No reader available')
+
+        const decoder = new TextDecoder()
+        let assistantContent = ''
+
+        // Add placeholder message for streaming
+        setMessages(prev => [...prev, { role: 'assistant', content: '' }])
+        setIsLoading(false) // Hide loading dots since we're showing content
+
+        while (true) {
+          const { done, value } = await reader.read()
+          if (done) break
+
+          const chunk = decoder.decode(value, { stream: true })
+          const lines = chunk.split('\n')
+
+          for (const line of lines) {
+            if (line.startsWith('data: ')) {
+              const data = line.slice(6)
+              if (data === '[DONE]') continue
+
+              try {
+                const parsed = JSON.parse(data)
+                if (parsed.content) {
+                  assistantContent += parsed.content
+                  // Update the last message with accumulated content
+                  setMessages(prev => {
+                    const newMessages = [...prev]
+                    newMessages[newMessages.length - 1] = {
+                      role: 'assistant',
+                      content: assistantContent
+                    }
+                    return newMessages
+                  })
+                }
+              } catch {
+                // Skip invalid JSON
+              }
+            }
+          }
+        }
+      } else {
+        // Handle JSON fallback (e.g., when API key is missing)
+        const data = await response.json()
+        setMessages(prev => [...prev, { role: 'assistant', content: data.content || data.error }])
+      }
     } catch (error) {
       console.error(error)
       setMessages(prev => [...prev, { role: 'assistant', content: '¡No mames! Se me fue el internet en el Polo Norte. Intenta de nuevo al rato, güey. 🎅📡' }])
@@ -170,7 +220,7 @@ export default function SantaChat({ trigger, className }: SantaChatProps) {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="Pregúntale a Santa..."
-                  className="flex-1 rounded-full bg-zinc-800 px-4 py-2 text-sm text-zinc-100 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-red-500/50 border border-zinc-700"
+                  className="flex-1 rounded-full bg-zinc-800 px-4 py-2 text-base sm:text-sm text-zinc-100 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-red-500/50 border border-zinc-700"
                   disabled={isLoading}
                 />
                 <Button 
