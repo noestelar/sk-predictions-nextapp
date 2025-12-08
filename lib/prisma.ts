@@ -5,10 +5,11 @@ declare global {
 }
 
 const prismaClientSingleton = () => {
-  const url = process.env.DATABASE_URL
+  // Use the pooled connection string from Vercel/Supabase
+  const url = process.env.DATABASE_POSTGRES_PRISMA_URL || process.env.DATABASE_URL
 
   if (!url) {
-    throw new Error('DATABASE_URL is not set. Please configure your PostgreSQL connection string.')
+    throw new Error('DATABASE_POSTGRES_PRISMA_URL (or DATABASE_URL) is not set.')
   }
 
   return new PrismaClient({
