@@ -1,5 +1,6 @@
 import { Client } from '@notionhq/client';
 import prisma from '@/lib/prisma';
+import { redis } from '@/lib/redis';
 
 // Helper to normalize strings for accent-insensitive comparison
 const normalizeString = (str: string) => {
@@ -23,6 +24,21 @@ const extractTextFromBlock = (block: any): string => {
 };
 
 export const getWishlistContext = async () => {
+  const CACHE_KEY = 'notion:wishlist_context';
+  
+  // Try cache first
+  if (redis) {
+    try {
+      const cached = await redis.get(CACHE_KEY);
+      if (cached) {
+        console.log('[Redis] Returning cached wishlist context');
+        return cached;
+      }
+    } catch (e) {
+      console.warn('[Redis] Error reading cache:', e);
+    }
+  }
+
   const apiKey = process.env.NOTION_API_KEY;
   const rawPageId = process.env.NOTION_PAGE_ID || '28276c7ee2d9808fa902f6b3a6e5f398';
   // Extract the 32-char UUID if it's part of a longer string (like a URL slug)
@@ -192,6 +208,17 @@ export const getWishlistContext = async () => {
     }
 
     console.log('✅ Notion data retrieved successfully. Length:', contextContent.length);
+    
+    // Cache the result
+    if (redis) {
+      try {
+        await redis.set(CACHE_KEY, contextContent, 'EX', 60 * 60); // 1 hour cache
+        console.log('[Redis] Cached wishlist context');
+      } catch (e) {
+        console.warn('[Redis] Error setting cache:', e);
+      }
+    }
+
     return contextContent;
 
   } catch (error) {
@@ -201,6 +228,22 @@ export const getWishlistContext = async () => {
 };
 
 export const searchParticipantWishlist = async (personName: string) => {
+  const normalizedKeyName = normalizeString(personName).replace(/\s+/g, '_');
+  const CACHE_KEY = `notion:search:${normalizedKeyName}`;
+
+  // Try cache first
+  if (redis) {
+    try {
+      const cached = await redis.get(CACHE_KEY);
+      if (cached) {
+        console.log(`[Redis] Returning cached search for "${personName}"`);
+        return cached;
+      }
+    } catch (e) {
+      console.warn('[Redis] Error reading cache:', e);
+    }
+  }
+
   const apiKey = process.env.NOTION_API_KEY;
   const rawPageId = process.env.NOTION_PAGE_ID || '28276c7ee2d9808fa902f6b3a6e5f398';
   const pageIdMatch = rawPageId.replace(/-/g, '').match(/[a-f0-9]{32}$/);
@@ -297,6 +340,16 @@ export const searchParticipantWishlist = async (personName: string) => {
 
         resultText += `\n👤 ${name}\n${details}\n`;
     });
+
+    // Cache the result
+    if (redis) {
+      try {
+        await redis.set(CACHE_KEY, resultText, 'EX', 60 * 60); // 1 hour cache
+        console.log(`[Redis] Cached search result for "${personName}"`);
+      } catch (e) {
+        console.warn('[Redis] Error setting cache:', e);
+      }
+    }
 
     return resultText;
 
