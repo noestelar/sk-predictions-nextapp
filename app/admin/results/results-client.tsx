@@ -45,27 +45,47 @@ export default function AdminResultsClient({ participants, initialResults }: Adm
     return allGifters.find(id => !usedGifters.includes(id))
   }
 
+  // Check if a valid matching is possible for remaining gifters and giftees
+  const canCompleteAssignment = (remainingGifters: string[], remainingGiftees: string[]): boolean => {
+    if (remainingGifters.length === 0) return true
+    if (remainingGifters.length !== remainingGiftees.length) return false
+
+    // Try to find a valid assignment using backtracking
+    const tryAssign = (gifterIndex: number, usedGiftees: Set<string>): boolean => {
+      if (gifterIndex >= remainingGifters.length) return true
+
+      const gifter = remainingGifters[gifterIndex]
+      for (const giftee of remainingGiftees) {
+        // Can't gift to self, can't use already assigned giftee
+        if (giftee !== gifter && !usedGiftees.has(giftee)) {
+          usedGiftees.add(giftee)
+          if (tryAssign(gifterIndex + 1, usedGiftees)) return true
+          usedGiftees.delete(giftee)
+        }
+      }
+      return false
+    }
+
+    return tryAssign(0, new Set())
+  }
+
   const getAvailableGiftees = (gifterId: string) => {
     const allGiftees = participants.map(p => p.id).filter(id => id !== gifterId)
     const usedGiftees = editingResults.map(pair => pair[1])
     const availableGiftees = allGiftees.filter(id => !usedGiftees.includes(id))
 
-    // Prevent dead-end: if we're second-to-last gifter, don't allow selecting
-    // the giftee that would leave the last gifter with only themselves
+    // Get remaining gifters after current selection
     const usedGifters = editingResults.map(pair => pair[0])
-    const remainingGifters = participants.map(p => p.id).filter(id => !usedGifters.includes(id) && id !== gifterId)
+    const futureGifters = participants.map(p => p.id).filter(id => !usedGifters.includes(id) && id !== gifterId)
 
-    if (remainingGifters.length === 1) {
-      const lastGifter = remainingGifters[0]
-      // If the last gifter is also in available giftees, we MUST select them
-      // Otherwise they'd have no one to gift to (can't gift to themselves)
-      if (availableGiftees.includes(lastGifter) && availableGiftees.length > 1) {
-        // Filter out everyone except the last gifter to force this selection
-        return availableGiftees.filter(id => id === lastGifter)
-      }
-    }
+    // Filter out choices that would make completion impossible
+    const safeGiftees = availableGiftees.filter(gifteeId => {
+      // Simulate choosing this giftee
+      const futureGiftees = availableGiftees.filter(id => id !== gifteeId)
+      return canCompleteAssignment(futureGifters, futureGiftees)
+    })
 
-    return availableGiftees
+    return safeGiftees.length > 0 ? safeGiftees : availableGiftees
   }
 
   const validateResults = (pairs: string[][]) => {
