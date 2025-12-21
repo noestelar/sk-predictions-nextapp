@@ -131,9 +131,8 @@ export default function AdminResultsClient({ participants, initialResults }: Adm
 
       if (nextGifter) {
         setCurrentGifter(nextGifter)
-        const allGiftees = participants.map(p => p.id).filter(id => id !== nextGifter)
-        const usedGiftees = updated.map(pair => pair[1])
-        const avail = allGiftees.filter(id => !usedGiftees.includes(id))
+        // Use getAvailableGiftees with updated results to prevent dead-ends
+        const avail = getAvailableGiftees(nextGifter, updated)
         setAvailableGiftees(avail)
         const gifterName = participants.find(p => p.id === nextGifter)?.name
         setStepMessage(`Selecciona a quién le regaló ${gifterName}:`)
