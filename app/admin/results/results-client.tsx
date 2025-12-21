@@ -48,7 +48,24 @@ export default function AdminResultsClient({ participants, initialResults }: Adm
   const getAvailableGiftees = (gifterId: string) => {
     const allGiftees = participants.map(p => p.id).filter(id => id !== gifterId)
     const usedGiftees = editingResults.map(pair => pair[1])
-    return allGiftees.filter(id => !usedGiftees.includes(id))
+    const availableGiftees = allGiftees.filter(id => !usedGiftees.includes(id))
+
+    // Prevent dead-end: if we're second-to-last gifter, don't allow selecting
+    // the giftee that would leave the last gifter with only themselves
+    const usedGifters = editingResults.map(pair => pair[0])
+    const remainingGifters = participants.map(p => p.id).filter(id => !usedGifters.includes(id) && id !== gifterId)
+
+    if (remainingGifters.length === 1) {
+      const lastGifter = remainingGifters[0]
+      // If the last gifter is also in available giftees, we MUST select them
+      // Otherwise they'd have no one to gift to (can't gift to themselves)
+      if (availableGiftees.includes(lastGifter) && availableGiftees.length > 1) {
+        // Filter out everyone except the last gifter to force this selection
+        return availableGiftees.filter(id => id === lastGifter)
+      }
+    }
+
+    return availableGiftees
   }
 
   const validateResults = (pairs: string[][]) => {
