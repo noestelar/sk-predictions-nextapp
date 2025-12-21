@@ -69,13 +69,15 @@ export default function AdminResultsClient({ participants, initialResults }: Adm
     return tryAssign(0, new Set())
   }
 
-  const getAvailableGiftees = (gifterId: string) => {
+  // Pass currentResults to handle async state updates in selectGiftee
+  const getAvailableGiftees = (gifterId: string, currentResults?: string[][]) => {
+    const results = currentResults ?? editingResults
     const allGiftees = participants.map(p => p.id).filter(id => id !== gifterId)
-    const usedGiftees = editingResults.map(pair => pair[1])
+    const usedGiftees = results.map(pair => pair[1])
     const availableGiftees = allGiftees.filter(id => !usedGiftees.includes(id))
 
     // Get remaining gifters after current selection
-    const usedGifters = editingResults.map(pair => pair[0])
+    const usedGifters = results.map(pair => pair[0])
     const futureGifters = participants.map(p => p.id).filter(id => !usedGifters.includes(id) && id !== gifterId)
 
     // Filter out choices that would make completion impossible
